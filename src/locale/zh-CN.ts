@@ -36,6 +36,8 @@ export default {
     'menu.list': '列表页',
     'menu.result': '结果页',
     'menu.exception': '异常页',
+    'menu.datasource': '数据源',
+    'menu.datasource.list': '数据源列表',
     'menu.form': '表单页',
     'menu.profile': '详情页',
     'menu.visualization': '数据可视化',
