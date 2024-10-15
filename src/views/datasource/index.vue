@@ -506,7 +506,7 @@ onMounted(() => {
 
 <script lang="ts">
 export default {
-    name: 'UserManager'
+    name: 'DataSource'
 }
 </script>
 

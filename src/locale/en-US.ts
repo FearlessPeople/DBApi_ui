@@ -47,6 +47,7 @@ export default {
     'menu.home': 'Home',
     'navbar.docs': 'Docs',
     'navbar.action.locale': 'Switch to English',
+    'menu.apis': 'API List',
     ...localeSettings,
     ...localeMessageBox,
     ...localeLogin,

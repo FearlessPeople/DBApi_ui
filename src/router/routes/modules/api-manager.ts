@@ -2,22 +2,22 @@ import { DEFAULT_LAYOUT } from '../base'
 import { AppRouteRecordRaw } from '../types'
 
 const EXCEPTION: AppRouteRecordRaw = {
-    path: '/datasource',
-    name: '数据源',
+    path: '/manager/api', // 注意这里不能用/api，因为/api是系统接口（会当做后端接口请求，导致页面404），而/manager/api是用户自定义接口
+    name: 'API接口',
     component: DEFAULT_LAYOUT,
     meta: {
-        locale: 'menu.datasource',
+        locale: 'menu.apis',
         requiresAuth: true,
         icon: 'icon-storage',
-        order: 6
+        order: 1
     },
     children: [
         {
             path: 'list',
-            name: '数据源列表',
-            component: () => import('@/views/datasource/index.vue'),
+            name: 'API接口列表',
+            component: () => import('@/views/api-manager/index.vue'),
             meta: {
-                locale: 'menu.datasource.list',
+                locale: 'menu.apis.list',
                 requiresAuth: true
             }
         }

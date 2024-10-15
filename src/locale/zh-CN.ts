@@ -50,6 +50,8 @@ export default {
     'navbar.action.locale': '切换为中文',
     'menu.sys.userManager': '用户管理',
     'menu.sys.role': '角色管理',
+    'menu.apis': 'API接口',
+    'menu.apis.list': 'API列表',
     ...localeSettings,
     ...localeMessageBox,
     ...localeLogin,
