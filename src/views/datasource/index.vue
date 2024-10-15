@@ -188,8 +188,8 @@
                             {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
                         </template>
                     </a-table-column>
-                    <a-table-column title="ID" data-index="id"></a-table-column>
-                    <a-table-column title="类型" data-index="dbType">
+                    <a-table-column title="ID" data-index="id" width="50" max-width="50"></a-table-column>
+                    <a-table-column title="类型" data-index="dbType" width="100" max-width="100">
                         <template #cell="{ record }">
                             <svg
                                 v-if="record.dbType === 1"
