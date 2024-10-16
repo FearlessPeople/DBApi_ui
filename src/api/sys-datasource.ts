@@ -27,7 +27,7 @@ export interface RoleListRes {
 }
 
 // 分页数据源列表
-export function pageDataSourceList(params: RoleParams) {
+export function pageDataSourceList(params: DataSourceParams) {
     return axios.post<ApiResponse<PageDataResponse<DataSourceRecord>>>(
         '/api/datasource/list',
         qs.stringify(params), // 将参数序列化为 URL 编码格式
