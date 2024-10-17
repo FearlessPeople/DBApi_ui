@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router' // 导入 Vue Router 创建函数
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router' // 导入 Vue Router 创建函数
 import NProgress from 'nprogress' // 导入页面加载进度条
 import 'nprogress/nprogress.css' // 导入进度条样式
 
@@ -9,7 +9,7 @@ import createRouteGuard from './guard' // 导入路由守卫配置
 NProgress.configure({ showSpinner: false }) // 配置 NProgress，禁用进度条的旋转图标
 
 const router = createRouter({
-    history: createWebHistory(), // 使用 HTML5 History 模式
+    history: createWebHashHistory(), // 使用 HTML5 History 模式
     routes: [
         {
             path: '/', // 根路径
