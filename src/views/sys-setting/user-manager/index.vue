@@ -315,7 +315,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, reactive, watch, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { computed, ref, reactive, watch, inject, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import {
@@ -334,7 +334,7 @@ import { Pagination } from '@/types/global'
 import { Message } from '@arco-design/web-vue'
 
 const { proxy } = getCurrentInstance()!
-const baseURL = proxy?.$baseURL
+const baseURL = inject('baseURL')
 // 定义表格大小类型
 type SizeProps = 'mini' | 'small' | 'medium' | 'large'
 
@@ -395,12 +395,16 @@ const densityList = computed(() => [
 
 // 切换用户状态
 const changeUserStatus = async (params: UserRecord) => {
-    const data = await switchUserStatus(params.id)
-    if (data.status) {
-        Message.success(data.message)
-        search()
+    if (params.id !== undefined) {
+        const data = await switchUserStatus(params.id)
+        if (data.status) {
+            Message.success(data.message)
+            search()
+        } else {
+            Message.error(data.message)
+        }
     } else {
-        Message.error(data.message)
+        Message.error('用户ID无效')
     }
 }
 
@@ -463,7 +467,7 @@ const userModalvisible = ref(false)
 const userRoleModalvisible = ref(false)
 const userModalFormRef = ref()
 const userModalForm = reactive({
-    id: undefined,
+    id: -1,
     nickname: '',
     username: '',
     password: '',
@@ -472,7 +476,7 @@ const userModalForm = reactive({
     remark: ''
 })
 
-const handleUserOk = async done => {
+const handleUserOk = async (done: (closed: boolean) => void) => {
     try {
         const valid = await userModalFormRef.value.validate()
         if (valid === undefined) {
@@ -482,14 +486,14 @@ const handleUserOk = async done => {
             }
             setLoading(true) // 开始加载
             try {
-                if (params.id > 0) {
+                if (params.id !== undefined && params.id > 0) {
                     fatchUpdateUser(params)
                 } else {
                     fatchCreateUser(params)
                 }
-                done()
+                done(true)
             } catch (err) {
-                Message.error(err)
+                Message.error('异常')
             } finally {
                 setLoading(false) // 加载结束
             }
@@ -559,12 +563,12 @@ const fatchUserRole = async (params: UserRecord) => {
 const updateUserFirm = async (params: UserRecord) => {
     setLoading(true) // 开始加载
     try {
-        userModalForm.nickname = params.nickname
-        userModalForm.username = params.username
+        userModalForm.nickname = params.nickname || ''
+        userModalForm.username = params.username || ''
         userModalForm.password = ''
-        userModalForm.email = params.email
-        userModalForm.phoneNumber = params.phoneNumber
-        userModalForm.remark = params.remark
+        userModalForm.email = params.email || ''
+        userModalForm.phoneNumber = params.phoneNumber || ''
+        userModalForm.remark = params.remark || ''
         userModalForm.id = params.id
         userModalvisible.value = true
     } catch (err) {
@@ -575,7 +579,8 @@ const updateUserFirm = async (params: UserRecord) => {
 }
 
 // 所有角色列表
-const currentUserRole = ref({}) // 当前点击的用户信息
+const currentUserRole = ref<UserRecord | null>(null) // 当前点击的用户信息
+
 const selectRoles = ref() // 用户最终选择的角色列表
 const roles = ref()
 const roleList = async () => {
@@ -596,21 +601,26 @@ const getUserRoleList = async (params: UserRecord) => {
     }
 }
 
-const handleRoleOk = async done => {
+const handleRoleOk = async (done: (closed: boolean) => void) => {
     try {
-        const userId = currentUserRole.value.id
-        const rolesToSet = selectRoles.value
-        const result = await setUserRole(userId, rolesToSet)
-        if (result.status) {
-            Message.success('角色更新成功')
-            done()
+        if (currentUserRole.value) {
+            const userId = currentUserRole.value.id
+            const rolesToSet = selectRoles.value
+            const result = await setUserRole(userId, rolesToSet)
+            if (result.status) {
+                Message.success('角色更新成功')
+                done(true)
+            } else {
+                Message.error('角色更新失败')
+                done(false)
+            }
         } else {
-            Message.error('角色更新失败')
-            done(false)
+            Message.error('用户信息不存在')
+            done(false) // 当 currentUserRole 为 null 时，关闭模态框
         }
     } catch (err) {
-        Message.error('表单填写错误')
-        done(false) // 验证失败时阻止弹窗关闭
+        Message.error('发生错误，无法更新角色')
+        done(false)
     }
 }
 

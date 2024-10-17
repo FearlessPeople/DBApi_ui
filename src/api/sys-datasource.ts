@@ -28,7 +28,7 @@ export interface RoleListRes {
 
 // 分页数据源列表
 export function pageDataSourceList(params: DataSourceParams) {
-    return axios.post<ApiResponse<PageDataResponse<DataSourceRecord>>>(
+    return axios.post<PageDataResponse<DataSourceRecord>>(
         '/api/datasource/list',
         qs.stringify(params), // 将参数序列化为 URL 编码格式
         {
@@ -39,34 +39,29 @@ export function pageDataSourceList(params: DataSourceParams) {
     )
 }
 
-// 所有数据源列表
-export function allRoleList() {
-    return axios.post<ApiResponse<DataSourceRecord>>('/api/role/all')
-}
-
 // 新增数据源
 export function createDataSource(params: DataSourceRecord) {
-    return axios.post<ApiResponse<string>>('/api/datasource/add', params)
+    return axios.post<any, ApiResponse<string>>('/api/datasource/add', params)
 }
 
 // 测试数据源
 export function testDataSource(params: DataSourceRecord) {
-    return axios.post<ApiResponse<string>>('/api/datasource/test', params)
+    return axios.post<any, ApiResponse<string>>('/api/datasource/test', params)
 }
 
 // 删除数据源
 export function deleteRole(id: number) {
-    return axios.get<ApiResponse<string>>(`/api/role/delete?id=${id}`)
+    return axios.get<any, ApiResponse<string>>(`/api/role/delete?id=${id}`)
 }
 
 // 更新数据源
 export function editDataSource(params: DataSourceRecord) {
-    return axios.post<ApiResponse<string>>('/api/datasource/edit', params)
+    return axios.post<any, ApiResponse<string>>('/api/datasource/edit', params)
 }
 
 // 获取数据源下所有权限
 export function getPermissions(params: DataSourceRecord) {
-    return axios.post<ApiResponse<string>>('/api/role/get-permissions-list', params)
+    return axios.post<any, ApiResponse<string>>('/api/role/get-permissions-list', params)
 }
 
 // 给数据源设置权限
@@ -76,10 +71,10 @@ export function setPermissions(params: DataSourceRecord, checkedKeys: []) {
         ...params,
         permissionIds: checkedKeys
     }
-    return axios.post<ApiResponse<string>>('/api/role/set-permissions', data)
+    return axios.post<any, ApiResponse<string>>('/api/role/set-permissions', data)
 }
 
 // 获取所有权限
 export function allPermissions() {
-    return axios.get<ApiResponse<string>>('/api/role/all-permissions')
+    return axios.get<any, ApiResponse<string>>('/api/role/all-permissions')
 }

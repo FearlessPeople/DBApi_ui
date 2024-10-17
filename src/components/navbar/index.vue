@@ -105,7 +105,7 @@ import Menu from '@/components/menu/index.vue'
 import MessageBox from '../message-box/index.vue'
 
 const { proxy } = getCurrentInstance()!
-const baseURL = proxy?.$baseURL
+const baseURL = inject('baseURL')
 
 const appStore = useAppStore()
 const userStore = useUserStore()

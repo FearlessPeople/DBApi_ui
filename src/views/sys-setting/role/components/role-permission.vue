@@ -10,7 +10,6 @@
                 :expanded-keys="[0]"
                 :show-line="true"
                 :checkable="true"
-                :block-node="true"
                 v-model:checked-keys="checkedKeys"
                 :data="treeData"
             />
@@ -20,13 +19,13 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch, onMounted } from 'vue'
-import { RoleRecord, allPermissions, setPermissions, getPermissions } from '@/api/sys-role-manager'
+import { RoleRecord, SysPermissionTree, allPermissions, setPermissions, getPermissions } from '@/api/sys-role-manager'
 import { PropType } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { number } from 'echarts'
 
-const checkedKeys = ref([])
-const treeData = ref([])
+const checkedKeys = ref<number[]>([]) // 假设权限是字符串类型
+const treeData = ref<SysPermissionTree[]>([])
 
 // 定义 Props 接收外部参数
 const props = defineProps({
@@ -72,6 +71,7 @@ function handleCheck(checkedKeysValue: any) {
 async function fetchAllPermissions() {
     const { data } = await allPermissions() // 从接口获取所有权限数据
     treeData.value = []
+    console.log(data)
     treeData.value.push(data)
 }
 
@@ -95,6 +95,12 @@ watch(
 )
 
 onMounted(async () => {})
+</script>
+
+<script lang="ts">
+export default {
+    name: 'RolePermission'
+}
 </script>
 
 <style lang="scss" scoped></style>

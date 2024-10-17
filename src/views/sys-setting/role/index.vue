@@ -131,14 +131,14 @@
                 @page-change="onPageChange"
             >
                 <template #columns>
-                    <a-table-column title="#" data-index="" width="50">
+                    <a-table-column title="#" data-index="" :width="50">
                         <template #cell="{ rowIndex }">
                             {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
                         </template>
                     </a-table-column>
-                    <a-table-column title="角色ID" data-index="id" width="80"></a-table-column>
-                    <a-table-column title="角色名称" data-index="name" width="100"></a-table-column>
-                    <a-table-column title="备注" data-index="remark" ellipsis="true" tooltip="true"></a-table-column>
+                    <a-table-column title="角色ID" data-index="id" :width="80"></a-table-column>
+                    <a-table-column title="角色名称" data-index="name" :width="100"></a-table-column>
+                    <a-table-column title="备注" data-index="remark" :ellipsis="true" :tooltip="true"></a-table-column>
                     <a-table-column title="创建时间" data-index="createTime"></a-table-column>
                     <a-table-column title="更新时间" data-index="updateTime"></a-table-column>
                     <a-table-column title="操作">
@@ -164,21 +164,21 @@
                 </template>
             </a-table>
         </a-card>
-        <rolePermission v-model:visible="isDrawerVisible" v-model:roleData="roleData" />
+        <RolePermission v-model:visible="isDrawerVisible" v-model:roleData="roleData" />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, reactive, watch, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { computed, ref, reactive, watch, getCurrentInstance, nextTick, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import { pageRoleList, createRole, deleteRole, editRole, RoleParams, RoleRecord } from '@/api/sys-role-manager'
 import { Pagination } from '@/types/global'
 import { Message } from '@arco-design/web-vue'
-import rolePermission from './components/role-permission.vue'
+import RolePermission from './components/role-permission.vue'
 
 const { proxy } = getCurrentInstance()!
-const baseURL = proxy?.$baseURL
+const baseURL = inject('baseURL')
 // 定义表格大小类型
 type SizeProps = 'mini' | 'small' | 'medium' | 'large'
 
@@ -293,12 +293,12 @@ const onPageChange = (current: number) => {
 const roleModalvisible = ref(false)
 const roleModalFormRef = ref()
 const roleModalForm = reactive({
-    id: undefined,
+    id: -1,
     name: '',
     remark: ''
 })
 
-const handleBeforeOk = async done => {
+const handleBeforeOk = async (done: (closed: boolean) => void) => {
     try {
         const valid = await roleModalFormRef.value.validate()
         if (valid === undefined) {
@@ -308,14 +308,14 @@ const handleBeforeOk = async done => {
             }
             setLoading(true) // 开始加载
             try {
-                if (params.id > 0) {
+                if (params.id !== undefined && params.id > 0) {
                     fatchUpdateRole(params)
                 } else {
                     fatchCreateRole(params)
                 }
-                done()
+                done(true)
             } catch (err) {
-                Message.error(err)
+                Message.error('角色信息保存失败')
             } finally {
                 setLoading(false) // 加载结束
             }
@@ -331,7 +331,7 @@ const handleBeforeOk = async done => {
 
 // 定义父组件中的控制变量
 const isDrawerVisible = ref(false)
-const roleData = ref({})
+const roleData = ref<RoleRecord>({ id: -1 })
 
 const setPermission = (record: RoleRecord) => {
     isDrawerVisible.value = true
@@ -339,7 +339,7 @@ const setPermission = (record: RoleRecord) => {
 }
 
 const resetRoleModal = () => {
-    roleModalForm.id = undefined
+    roleModalForm.id = -1
     roleModalForm.name = ''
     roleModalForm.remark = ''
 }
@@ -379,8 +379,8 @@ const fatchUpdateRole = async (params: RoleRecord) => {
 const updateRoleFirm = async (params: RoleRecord) => {
     setLoading(true) // 开始加载
     try {
-        roleModalForm.name = params.name
-        roleModalForm.remark = params.remark
+        roleModalForm.name = params.name || '' // 如果是 undefined 则默认为 ''
+        roleModalForm.remark = params.remark || ''
         roleModalForm.id = params.id
         roleModalvisible.value = true
     } catch (err) {

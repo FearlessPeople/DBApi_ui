@@ -183,13 +183,13 @@
                 @page-change="onPageChange"
             >
                 <template #columns>
-                    <a-table-column title="#" data-index="" width="50">
+                    <a-table-column title="#" data-index="" :width="50">
                         <template #cell="{ rowIndex }">
                             {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
                         </template>
                     </a-table-column>
-                    <a-table-column title="ID" data-index="id" width="50" max-width="50"></a-table-column>
-                    <a-table-column title="类型" data-index="dbType" width="100" max-width="100">
+                    <a-table-column title="ID" data-index="id" :width="50" :max-width="50"></a-table-column>
+                    <a-table-column title="类型" data-index="dbType" :width="100" :max-width="100">
                         <template #cell="{ record }">
                             <svg
                                 v-if="record.dbType === 1"
@@ -252,10 +252,10 @@
                         </template>
                     </a-table-column>
                     <a-table-column title="数据源名称" data-index="name"></a-table-column>
-                    <a-table-column title="JDBC URL" data-index="jdbcUrl" width="500" minWidth="500"></a-table-column>
+                    <a-table-column title="JDBC URL" data-index="jdbcUrl" :width="500" :minWidth="500"></a-table-column>
                     <a-table-column title="用户名" data-index="username"></a-table-column>
                     <a-table-column title="密码" data-index="password"></a-table-column>
-                    <a-table-column title="备注" data-index="remark" ellipsis="true" tooltip="true"></a-table-column>
+                    <a-table-column title="备注" data-index="remark" :ellipsis="true" :tooltip="true"></a-table-column>
                     <a-table-column title="创建时间" data-index="createTime"></a-table-column>
                     <a-table-column title="更新时间" data-index="updateTime"></a-table-column>
                     <a-table-column title="操作">
@@ -277,7 +277,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, reactive, watch, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { computed, ref, reactive, watch, inject, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import {
@@ -292,7 +292,7 @@ import { Pagination } from '@/types/global'
 import { Message } from '@arco-design/web-vue'
 
 const { proxy } = getCurrentInstance()!
-const baseURL = proxy?.$baseURL
+const baseURL = inject('baseURL')
 // 定义表格大小类型
 type SizeProps = 'mini' | 'small' | 'medium' | 'large'
 
@@ -423,7 +423,7 @@ const testConnection = async () => {
     }
 }
 
-const handleBeforeOk = async done => {
+const handleBeforeOk = async (done: (closed: boolean) => void) => {
     try {
         const valid = await dataSourceModalFormRef.value.validate()
         if (valid === undefined) {
@@ -433,7 +433,7 @@ const handleBeforeOk = async done => {
             }
             setLoading(true) // 开始加载
             try {
-                if (params.id > 0) {
+                if (params.id !== undefined && params.id > 0) {
                     const data = await editDataSource(params) // 调用 API 获取数据
                     if (data.status) {
                         Message.success(data.message)
@@ -449,7 +449,7 @@ const handleBeforeOk = async done => {
                         Message.error(data.message)
                     }
                 }
-                done()
+                done(true)
                 search()
                 resetDataSourceModalForm()
             } catch (err) {
