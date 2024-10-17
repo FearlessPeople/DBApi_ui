@@ -32,7 +32,7 @@ const useAppStore = defineStore('app', {
         // 更新应用设置
         updateSettings(partial: Partial<AppState>) {
             // 使用Pinia的$patch方法局部更新状态
-            this.$patch(partial)
+            this.$patch(partial as any)
         },
 
         // 切换主题颜色（深色/浅色）
