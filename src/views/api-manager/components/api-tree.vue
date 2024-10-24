@@ -16,7 +16,7 @@
             </div>
             <div class="search-content">
                 <a-collapse :bordered="false">
-                    <a-collapse-item header="公共数据" key="1">
+                    <a-collapse-item v-for="group in renderData" :key="group.id" :header="group.groupName">
                         <template #extra>
                             <a-dropdown trigger="hover">
                                 <a-button type="text">
@@ -29,115 +29,13 @@
                                 </template>
                             </a-dropdown>
                         </template>
+
+                        <!-- 接口列表 -->
                         <div class="api-list">
-                            <div class="api-list-item">
+                            <div v-for="api in group.apiList" :key="api.id" class="api-list-item">
                                 <div class="left-content">
                                     <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                        </div>
-                    </a-collapse-item>
-                    <a-collapse-item header="财务数据" :key="2">
-                        <template #extra>
-                            <a-dropdown trigger="hover">
-                                <a-button type="text">
-                                    <icon-more />
-                                </a-button>
-                                <template #content>
-                                    <a-doption>新增接口</a-doption>
-                                    <a-doption>编辑分组</a-doption>
-                                    <a-doption>删除分组</a-doption>
-                                </template>
-                            </a-dropdown>
-                        </template>
-                        <div class="api-list">
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                        </div>
-                    </a-collapse-item>
-                    <a-collapse-item header="OA数据" key="3">
-                        <template #extra>
-                            <a-dropdown trigger="hover">
-                                <a-button type="text">
-                                    <icon-more />
-                                </a-button>
-                                <template #content>
-                                    <a-doption>新增接口</a-doption>
-                                    <a-doption>编辑分组</a-doption>
-                                    <a-doption>删除分组</a-doption>
-                                </template>
-                            </a-dropdown>
-                        </template>
-                        <div class="api-list">
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
-                                </div>
-                                <a-button type="text" class="right-icon">
-                                    <icon-double-right />
-                                </a-button>
-                            </div>
-                            <div class="api-list-item">
-                                <div class="left-content">
-                                    <icon-code />
-                                    <span class="api-text">接口数据dmadf</span>
+                                    <span class="api-text">{{ api.apiName }}</span>
                                 </div>
                                 <a-button type="text" class="right-icon">
                                     <icon-double-right />
@@ -153,11 +51,33 @@
 
 <script lang="ts" setup>
 import { ref, computed, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import useLoading from '@/hooks/loading'
 import { useRouter, useRoute } from 'vue-router'
+import { queryApiList, ApiGroup, ApiList } from '@/api/apis'
 
-function sayHello() {
-    console.log('hello')
+// 使用自定义的加载状态 Hook
+const { loading, setLoading } = useLoading(true)
+
+// 定义渲染数据的响应式变量
+const renderData = ref<ApiGroup[]>([])
+
+// 获取数据的异步函数
+const fetchData = async () => {
+    setLoading(true) // 开始加载
+    try {
+        const { data } = await queryApiList()
+        renderData.value = data.records
+    } catch (err) {
+        // 错误处理，可以使用 errorHandler 或其他方式
+    } finally {
+        setLoading(false)
+    }
 }
+
+onMounted(() => {
+    fetchData()
+})
 </script>
 
 <script lang="ts">
