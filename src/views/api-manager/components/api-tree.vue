@@ -32,7 +32,7 @@
 
                         <!-- 接口列表 -->
                         <div class="api-list">
-                            <div v-for="api in group.apiList" :key="api.id" class="api-list-item">
+                            <div v-for="api in group.apiList" :key="api.id" @click="openApi(api)" class="api-list-item">
                                 <div class="left-content">
                                     <icon-code />
                                     <span class="api-text">{{ api.apiName }}</span>
@@ -75,6 +75,10 @@ const fetchData = async () => {
     }
 }
 
+const openApi = (api: ApiList) => {
+    console.log(api)
+}
+
 onMounted(() => {
     fetchData()
 })
@@ -107,8 +111,9 @@ export default {
         display: flex;
         align-items: center; /* 垂直居中对齐 */
         justify-content: space-between; /* 左右对齐 */
-        padding: 8px 16px;
-        padding: 5px;
+        font-size: 13px;
+        line-height: 13px;
+        padding: 0px 5px;
         border-radius: 4px;
         cursor: pointer;
         &:hover {
