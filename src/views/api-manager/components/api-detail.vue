@@ -1,52 +1,13 @@
 <template>
-    <a-typography :style="{ marginTop: '-40px' }">
-        <a-typography-title> Design system </a-typography-title>
-        <a-typography-paragraph>
-            A design is a plan or specification for the construction of an object or system or for the implementation of an
-            activity or process, or the result of that plan or specification in the form of a prototype, product or process. The
-            verb to design expresses the process of developing a design.
-        </a-typography-paragraph>
-        <a-typography-paragraph>
-            In some cases, the direct construction of an object without an explicit prior plan (such as in craftwork, some
-            engineering, coding, and graphic design) may also be considered
-            <a-typography-text bold>to be a design activity.</a-typography-text>
-        </a-typography-paragraph>
-        <a-typography-title :heading="2">ArcoDesign</a-typography-title>
-        <a-typography-paragraph>
-            The ArcoDesign component library defines a set of default particle variables, and a custom theme is to
-            <a-typography-text mark>customize</a-typography-text> and
-            <a-typography-text underline>overwrite</a-typography-text> this variable list.
-        </a-typography-paragraph>
-        <a-typography-paragraph blockquote>
-            A design is a plan or specification for the construction of an object or system or for the implementation of an
-            activity or process, or the result of that plan or specification in the form of a
-            <a-typography-text code>prototype</a-typography-text>, <a-typography-text code>product</a-typography-text> or
-            <a-typography-text code>process</a-typography-text>. The verb to design expresses the process of developing a design.
-        </a-typography-paragraph>
-        <a-typography-paragraph mark underline delete
-            >A design is a plan or specification for the construction of an object or system or for the implementation of an
-            activity or process.</a-typography-paragraph
-        >
-        <a-typography-paragraph>
-            <ul>
-                <li>
-                    Architectural blueprints
-                    <ul>
-                        <li>Architectural blueprints</li>
-                    </ul>
-                </li>
-                <li>Engineering drawings</li>
-                <li>Business processes</li>
-            </ul>
-        </a-typography-paragraph>
-        <a-typography-paragraph>
-            <ol>
-                <li>Architectural blueprints</li>
-                <li>Engineering drawings</li>
-                <li>Business processes</li>
-            </ol>
-        </a-typography-paragraph>
-    </a-typography>
+    <h2>API 详情</h2>
+    <div v-if="api">
+        <p>API 名称: {{ api.apiName }}</p>
+        <p>API 描述: {{ api.apiDesc }}</p>
+        <!-- 其他 API 详细信息 -->
+    </div>
+    <div v-else>
+        <p>请选择一个 API 以查看详情</p>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -54,7 +15,14 @@ import { ref, computed, reactive, getCurrentInstance, nextTick, onMounted } from
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import { useRouter, useRoute } from 'vue-router'
+
 import { queryApiList, ApiGroup, ApiList } from '@/api/apis'
+
+import { defineProps } from 'vue'
+
+const props = defineProps<{
+    api: ApiList | null // 接收父组件传递的 API 对象
+}>()
 </script>
 
 <script lang="ts">
