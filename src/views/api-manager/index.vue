@@ -398,6 +398,7 @@ export default {
     display: flex;
     flex-direction: column;
     margin-left: 10px;
+    background-color: #f6f7f9;
 
     .api-list-item {
         display: flex;
@@ -409,11 +410,11 @@ export default {
         border-radius: 4px;
         cursor: pointer;
         &:hover {
-            background-color: #f6f7f9;
+            background-color: #ffffff;
         }
     }
     .selected-item {
-        background-color: #e3f1fe; /* 选中项背景颜色为灰色 */
+        color: #0054f9;
     }
     .left-content {
         display: flex;
