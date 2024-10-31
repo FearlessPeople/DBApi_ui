@@ -9,12 +9,12 @@ export interface ApiList {
     apiName: string // 接口名称
     apiPath: string // 接口路径
     apiDesc: string // 接口描述
-    apiGroup: number // 接口分组
-    publishTime: Date // 发布时间
-    status: number // 接口状态 0发布 1未发布
-    createBy: number // 创建人
-    createTime: Date // 创建时间
-    updateTime: Date // 更新时间
+    apiGroup: number // 分组
+    publishTime?: Date // 发布时间
+    status?: number // 接口状态 0发布 1未发布
+    createBy?: number // 创建人
+    createTime?: Date // 创建时间
+    updateTime?: Date // 更新时间
 }
 
 // ApiGroup 接口
@@ -30,18 +30,27 @@ export interface ApiGroup {
 export function queryApiList() {
     return axios.post<PageDataResponse<ApiGroup>>('/api/group/apiList')
 }
+// 新增接口
+export function addApiList(apiList: ApiList) {
+    return axios.post<PageDataResponse<ApiList>>('/api/apiList/add', apiList)
+}
 
-// 新增接口分组
+// 获取所有分组列表
+export function queryApiGroupList() {
+    return axios.get<ApiGroup[]>('/api/group/allList')
+}
+
+// 新增分组
 export function addApiGroup(group: ApiGroup) {
     return axios.post<any, ApiResponse<string>>('/api/group/add', group)
 }
 
-// 修改接口分组
+// 修改分组
 export function updateApiGroup(group: ApiGroup) {
     return axios.post<any, ApiResponse<string>>('/api/group/edit', group)
 }
 
-// 删除接口分组
+// 删除分组
 export function deleteApiGroup(group: ApiGroup) {
     return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
 }

@@ -63,7 +63,7 @@
             <a-layout-content>
                 <a-tabs trigger="hover">
                     <template #extra>
-                        <a-button type="primary">新建接口</a-button>&nbsp;&nbsp;
+                        <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
                         <a-button size="mini" type="outline" status="success">帮助文档</a-button>
                     </template>
                     <a-tab-pane key="1" title="文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
@@ -101,6 +101,69 @@
             </a-form-item>
         </a-form>
     </a-modal>
+
+    <!-- 新增接口弹窗 -->
+    <a-modal
+        v-model:visible="createApiModalVisible"
+        title="新增接口"
+        @cancel="createHandleCancel"
+        @before-ok="craeteHandleBeforeOk"
+        draggable
+    >
+        <a-form :model="createApiForm" ref="createApiFormRef">
+            <a-form-item
+                field="apiName"
+                label="接口名称"
+                :rules="[
+                    {
+                        required: true,
+                        message: '接口名称不能为空'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-input v-model="createApiForm.apiName" placeholder="请输入接口名称..." />
+            </a-form-item>
+            <a-form-item
+                field="apiPath"
+                label="接口路径"
+                :rules="[
+                    {
+                        required: true,
+                        message: '接口路径不能为空'
+                    },
+                    {
+                        match: /^[a-zA-Z\/]+$/,
+                        message: '只能包含字母和/'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <span style="background-color: #e2ffe8">http://localhost:8080/</span>
+                <a-input v-model="createApiForm.apiPath" size="mini" placeholder="请输入接口请求路径..." />
+            </a-form-item>
+            <a-form-item
+                field="apiGroup"
+                label="接口分组"
+                :rules="[
+                    {
+                        required: true,
+                        message: '接口分组不能为空'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-select v-model="createApiForm.apiGroup" placeholder="请选择接口分组" allow-clear>
+                    <a-option v-for="group in groupList" :key="group.id" :value="group.id">
+                        {{ group.groupName }}
+                    </a-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item field="apiDesc" label="接口描述">
+                <a-textarea v-model="createApiForm.apiDesc" />
+            </a-form-item>
+        </a-form>
+    </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -109,7 +172,16 @@ import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import { Modal } from '@arco-design/web-vue'
 import { useRouter, useRoute } from 'vue-router'
-import { queryApiList, ApiGroup, ApiList, addApiGroup, updateApiGroup, deleteApiGroup } from '@/api/apis'
+import {
+    queryApiList,
+    addApiList,
+    ApiGroup,
+    queryApiGroupList,
+    ApiList,
+    addApiGroup,
+    updateApiGroup,
+    deleteApiGroup
+} from '@/api/apis'
 import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
 
@@ -146,34 +218,30 @@ const handleCancel = () => {
 }
 
 const handleBeforeOk = async (done: (closed: boolean) => void) => {
-    try {
-        const valid = await groupModalFormRef.value.validate()
-        if (valid === undefined) {
-            // 验证通过
-            const params = {
-                ...groupModalForm
-            }
-            setLoading(true) // 开始加载
-            if (params.id !== undefined && params.id > 0) {
-                // 编辑分组
-                const { data } = await updateApiGroup(params)
-                Message.success('分组信息更新成功')
-                done(true)
-                fetchData()
-            } else {
-                // 新增分组
-                const { data } = await addApiGroup(params)
-                Message.success('分组信息新增成功')
-                done(true)
-                fetchData()
-            }
-        } else {
-            // 表单验证失败
-            done(false) // 不关闭弹窗
+    const valid = await groupModalFormRef.value.validate()
+    if (valid === undefined) {
+        // 验证通过
+        const params = {
+            ...groupModalForm
         }
-    } catch (err) {
+        setLoading(true) // 开始加载
+        if (params.id !== undefined && params.id > 0) {
+            // 编辑分组
+            const { data } = await updateApiGroup(params)
+            Message.success('分组信息更新成功')
+            done(true)
+            fetchData()
+        } else {
+            // 新增分组
+            const { data } = await addApiGroup(params)
+            Message.success('分组信息新增成功')
+            done(true)
+            fetchData()
+        }
+    } else {
         Message.error('表单验证失败')
-        done(false)
+        // 表单验证失败
+        done(false) // 不关闭弹窗
     }
 }
 
@@ -226,6 +294,59 @@ const deleteGroup = async (group: ApiGroup) => {
             onCancel: () => {}
         })
     }
+}
+
+// 新增接口弹窗的状态
+const createApiModalVisible = ref(false)
+const createApiForm: ApiList = reactive({
+    id: 0,
+    apiName: '',
+    apiPath: '',
+    apiDesc: '',
+    apiGroup: 1
+})
+const createApiFormRef = ref<any>()
+
+const createHandleCancel = () => {
+    createApiModalVisible.value = false
+}
+
+const createApi = () => {
+    fetchGroupList()
+    createApiForm.apiName = ''
+    createApiForm.apiPath = ''
+    createApiForm.apiDesc = ''
+    createApiForm.apiGroup = 1
+    createApiModalVisible.value = true
+}
+
+const craeteHandleBeforeOk = async (done: (closed: boolean) => void) => {
+    const valid = await createApiFormRef.value.validate()
+    if (valid === undefined) {
+        // 验证通过
+        const params: ApiList = {
+            ...createApiForm
+        }
+        setLoading(true) // 开始加载
+        const { data } = await addApiList(params)
+        if (data) {
+            Message.success('接口新增成功')
+            done(true)
+            fetchData()
+        } else {
+            Message.error('接口新增失败')
+        }
+    } else {
+        Message.error('表单验证失败')
+        // 表单验证失败
+        done(false) // 不关闭弹窗
+    }
+}
+
+const groupList = ref<ApiGroup[]>([])
+const fetchGroupList = async () => {
+    const { data } = await queryApiGroupList()
+    groupList.value = data
 }
 
 onMounted(() => {
