@@ -2,12 +2,24 @@
     <div class="api-design" v-if="api">
         <div class="api-header">
             <h2>{{ api.apiName }}</h2>
+            <span>{{ api.apiDesc }}</span>
             <a-button type="outline">编辑</a-button>
         </div>
 
         <div class="api-design-center">
             <div class="api-design-left">api-design-left</div>
-            <div class="api-design-center-content">api-design-center-content</div>
+            <div class="api-design-center-content">
+                <Codemirror
+                    v-model="code"
+                    placeholder="请在这里输入SQL语句..."
+                    :style="{ height: '400px' }"
+                    :autofocus="true"
+                    :indent-with-tab="true"
+                    :tab-size="2"
+                    :extensions="extensions"
+                    @ready="handleReady"
+                />
+            </div>
             <div class="api-design-right">api-design-right</div>
         </div>
     </div>
@@ -17,9 +29,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { ref, watch, reactive, shallowRef, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { Codemirror } from 'vue-codemirror'
+import { oneDark } from '@codemirror/theme-one-dark'
+
 import { ApiList } from '@/api/apis'
+import { sql } from '@codemirror/lang-sql'
 
 // 接收父组件传递的 API 对象
 const props = defineProps<{
@@ -28,6 +44,25 @@ const props = defineProps<{
 
 const router = useRouter() // 获取路由实例
 const route = useRoute() // 获取当前路由对象
+
+const code = ref(
+    `select * from ods.ods_local_cw_clinic_zxp t where 1=1 and batch_no = '20240920133320428691' and brand_code ='AA0292';`
+)
+const extensions = [sql(), oneDark]
+
+// Codemirror EditorView instance ref
+const view = shallowRef()
+
+const handleReady = (payload: { view: any }) => {
+    view.value = payload.view
+}
+
+// Status is available at all times via Codemirror EditorView
+const getCodemirrorStates = () => {
+    if (!view.value) return
+    const { state } = view.value
+    const { ranges } = state.selection
+}
 </script>
 
 <style lang="less" scoped>
