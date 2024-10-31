@@ -39,7 +39,7 @@
                                             v-for="api in group.apiList"
                                             :key="api.id"
                                             @click="openApi(api)"
-                                            class="api-list-item"
+                                            :class="['api-list-item', { 'selected-item': selectedApiId === api.id }]"
                                         >
                                             <div class="left-content">
                                                 <icon-code />
@@ -78,8 +78,10 @@ const { loading, setLoading } = useLoading(true)
 
 // 定义渲染数据的响应式变量
 const renderData = ref<ApiGroup[]>([])
-
-const currApi = ref<ApiList | null>(null) // 选中的 API 对象
+// 存储选中的 API ID
+const selectedApiId = ref<number | null>(null)
+// 选中的 API 对象
+const currApi = ref<ApiList | null>(null)
 // 获取数据的异步函数
 const fetchData = async () => {
     setLoading(true) // 开始加载
@@ -96,6 +98,7 @@ const fetchData = async () => {
 const openApi = (api: ApiList) => {
     console.log(api)
     currApi.value = api // 将选中的 API 对象存储到响应式变量中
+    selectedApiId.value = api.id // 设置当前选中 API 的 ID
 }
 
 onMounted(() => {
@@ -133,7 +136,7 @@ export default {
 .search-filter {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 5px 0px;
 }
 :deep(.arco-collapse-item-content) {
     width: 100%;
@@ -159,7 +162,9 @@ export default {
             background-color: #f6f7f9;
         }
     }
-
+    .selected-item {
+        background-color: #e3f1fe; /* 选中项背景颜色为灰色 */
+    }
     .left-content {
         display: flex;
         align-items: center; /* 使icon-code和文本垂直居中 */

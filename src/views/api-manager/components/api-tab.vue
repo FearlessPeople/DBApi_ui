@@ -1,5 +1,9 @@
 <template>
     <a-tabs trigger="hover">
+        <template #extra>
+            <a-button type="primary">新建接口</a-button>&nbsp;&nbsp;
+            <a-button size="mini" type="outline" status="success">帮助文档</a-button>
+        </template>
         <a-tab-pane key="1" title="文档"> <ApiDoc :api="api"></ApiDoc> </a-tab-pane>
         <a-tab-pane key="2" title="接口设计"> Content of Tab Panel 2 </a-tab-pane>
         <a-tab-pane key="3" title="运行"> Content of Tab Panel 3 </a-tab-pane>
