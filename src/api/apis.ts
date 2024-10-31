@@ -27,8 +27,9 @@ export interface ApiGroup {
 }
 
 // 接口列表
-export function queryApiList() {
-    return axios.post<PageDataResponse<ApiGroup>>('/api/group/apiList')
+export function queryApiList(keyWord: string) {
+    const params = qs.stringify({ apiName: keyWord })
+    return axios.post<PageDataResponse<ApiGroup>>('/api/group/apiList', params)
 }
 // 新增接口
 export function addApiList(apiList: ApiList) {

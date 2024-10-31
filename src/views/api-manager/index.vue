@@ -5,7 +5,12 @@
                 <div class="api-tree">
                     <div>
                         <div class="search-filter">
-                            <a-input-search v-model="searchKey" placeholder="搜索接口" />
+                            <a-input-search
+                                v-model="keyWord"
+                                @search="fetchData()"
+                                @press-enter="fetchData()"
+                                placeholder="输入接口名称模糊搜索..."
+                            />
                             <a-tooltip content="刷新接口分组">
                                 <a-button type="text" @click="fetchData()">
                                     <template #icon>
@@ -185,7 +190,7 @@ import {
 import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
 
-const searchKey = ref('') // 搜索关键字
+const keyWord = ref('') // 搜索关键字
 // 使用自定义的加载状态 Hook
 const { loading, setLoading } = useLoading(true)
 
@@ -199,7 +204,7 @@ const selectedApi = ref<ApiList | null>(null)
 const fetchData = async () => {
     setLoading(true) // 开始加载
     try {
-        const { data } = await queryApiList()
+        const { data } = await queryApiList(keyWord.value)
         renderData.value = data.records
     } catch (err) {
         // 错误处理，可以使用 errorHandler 或其他方式
