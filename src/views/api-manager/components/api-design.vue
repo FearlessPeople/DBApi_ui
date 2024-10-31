@@ -1,26 +1,45 @@
 <template>
     <div class="api-design" v-if="api">
         <div class="api-header">
-            <h2>{{ api.apiName }}</h2>
-            <span>{{ api.apiDesc }}</span>
-            <a-button type="outline">编辑</a-button>
+            <div class="api-header-left">
+                <h2>{{ api.apiName }}</h2>
+                <span>{{ api.apiDesc }}</span>
+            </div>
+            <div class="api-header-right">
+                <a-button>
+                    <template #icon>
+                        <icon-caret-right style="color: rgb(var(--green-6))" />
+                    </template>
+                    运行
+                </a-button>
+                <a-button>
+                    <template #icon>
+                        <icon-save style="color: rgb(var(--arcoblue-6))" />
+                    </template>
+                    保存
+                </a-button>
+            </div>
         </div>
 
         <div class="api-design-center">
-            <div class="api-design-left">api-design-left</div>
+            <div class="api-design-left">数据源及表列表</div>
             <div class="api-design-center-content">
                 <Codemirror
                     v-model="code"
                     placeholder="请在这里输入SQL语句..."
-                    :style="{ height: 'calc(100vh - 205px)' }"
+                    :style="{ height: 'calc(100vh - 240px)' }"
                     :autofocus="true"
                     :indent-with-tab="true"
                     :tab-size="2"
                     :extensions="extensions"
                     @ready="handleReady"
                 />
+                <div class="api-design-center-bottom">
+                    <span>成功 查询耗时2.3秒</span>
+                    <a-button type="text" size="small">查看执行结果</a-button>
+                </div>
             </div>
-            <div class="api-design-right">api-design-right</div>
+            <div class="api-design-right">SQL参数</div>
         </div>
     </div>
     <div v-else>
@@ -73,7 +92,20 @@ const getCodemirrorStates = () => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        .api-header-left {
+            display: flex;
+            align-items: center;
+            span {
+                margin-left: 20px;
+            }
+        }
+        .api-header-right {
+            display: flex;
+            align-items: center;
+            button {
+                margin-left: 10px;
+            }
+        }
     }
 
     .api-design-center {
@@ -87,17 +119,22 @@ const getCodemirrorStates = () => {
         }
 
         .api-design-left {
-            background-color: #967272;
             width: 15%;
+            border: 1px solid var(--color-neutral-3);
         }
 
         .api-design-center-content {
-            background-color: #729672;
             width: 70%;
+            .api-design-center-bottom {
+                height: 35px;
+                line-height: 35px;
+                padding-left: 10px;
+                border: 1px solid var(--color-neutral-3);
+            }
         }
 
         .api-design-right {
-            background-color: #727296;
+            border: 1px solid var(--color-neutral-3);
             width: 15%;
         }
     }
