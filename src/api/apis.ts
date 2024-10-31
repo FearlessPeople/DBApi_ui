@@ -22,11 +22,26 @@ export interface ApiGroup {
     id: number // 自增ID
     groupName: string // 分组名称
     apiList?: ApiList[] // 接口列表 (可选属性，默认为空数组)
-    createTime: Date // 创建时间
-    updateTime: Date // 更新时间
+    createTime?: Date // 创建时间
+    updateTime?: Date // 更新时间
 }
 
 // 接口列表
 export function queryApiList() {
     return axios.post<PageDataResponse<ApiGroup>>('/api/group/apiList')
+}
+
+// 新增接口分组
+export function addApiGroup(group: ApiGroup) {
+    return axios.post<any, ApiResponse<string>>('/api/group/add', group)
+}
+
+// 修改接口分组
+export function updateApiGroup(group: ApiGroup) {
+    return axios.post<any, ApiResponse<string>>('/api/group/edit', group)
+}
+
+// 删除接口分组
+export function deleteApiGroup(group: ApiGroup) {
+    return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
 }

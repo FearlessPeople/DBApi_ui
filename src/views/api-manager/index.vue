@@ -6,16 +6,21 @@
                     <div>
                         <div class="search-filter">
                             <a-input-search v-model="searchKey" placeholder="搜索接口" />
-                            <a-button type="text">
-                                <template #icon>
-                                    <icon-refresh />
-                                </template>
-                            </a-button>
-                            <a-button type="text">
-                                <template #icon>
-                                    <icon-plus />
-                                </template>
-                            </a-button>
+                            <a-tooltip content="刷新接口分组">
+                                <a-button type="text" @click="fetchData()">
+                                    <template #icon>
+                                        <icon-refresh />
+                                    </template>
+                                </a-button>
+                            </a-tooltip>
+
+                            <a-tooltip content="新建接口分组">
+                                <a-button type="text" @click="addGroup()">
+                                    <template #icon>
+                                        <icon-plus />
+                                    </template>
+                                </a-button>
+                            </a-tooltip>
                         </div>
                         <div class="search-content">
                             <a-collapse :bordered="false">
@@ -26,9 +31,8 @@
                                                 <icon-more />
                                             </a-button>
                                             <template #content>
-                                                <a-doption>新增接口</a-doption>
-                                                <a-doption>编辑分组</a-doption>
-                                                <a-doption>删除分组</a-doption>
+                                                <a-doption @click="editGroup(group)">编辑分组</a-doption>
+                                                <a-doption @click="deleteGroup(group)">删除分组</a-doption>
                                             </template>
                                         </a-dropdown>
                                     </template>
@@ -57,20 +61,57 @@
                 </div>
             </a-layout-sider>
             <a-layout-content>
-                <!-- 向 ApiDetail 组件传递 api 对象 -->
-                <ApiTab :api="currApi" />
+                <a-tabs trigger="hover">
+                    <template #extra>
+                        <a-button type="primary">新建接口</a-button>&nbsp;&nbsp;
+                        <a-button size="mini" type="outline" status="success">帮助文档</a-button>
+                    </template>
+                    <a-tab-pane key="1" title="文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
+                    <a-tab-pane key="2" title="接口设计"> Content of Tab Panel 2 </a-tab-pane>
+                    <a-tab-pane key="3" title="运行"> Content of Tab Panel 3 </a-tab-pane>
+                    <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
+                </a-tabs>
             </a-layout-content>
         </a-layout>
     </div>
+
+    <!-- 新增和编辑分组弹窗 -->
+    <a-modal
+        v-model:visible="groupModalVisible"
+        title="分组信息"
+        @cancel="handleCancel"
+        @before-ok="handleBeforeOk"
+        width="600px"
+        min-width="600px"
+        draggable
+    >
+        <a-form ref="groupModalFormRef" :model="groupModalForm">
+            <a-form-item
+                field="groupName"
+                label="分组名称"
+                :rules="[
+                    {
+                        required: true,
+                        message: '分组名称不能为空'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-input v-model="groupModalForm.groupName" placeholder="请输入分组名称" />
+            </a-form-item>
+        </a-form>
+    </a-modal>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
+import { Modal } from '@arco-design/web-vue'
 import { useRouter, useRoute } from 'vue-router'
-import { queryApiList, ApiGroup, ApiList } from '@/api/apis'
-import ApiTab from './components/api-tab.vue'
+import { queryApiList, ApiGroup, ApiList, addApiGroup, updateApiGroup, deleteApiGroup } from '@/api/apis'
+import { Message } from '@arco-design/web-vue'
+import ApiDoc from './components/api-doc.vue'
 
 const searchKey = ref('') // 搜索关键字
 // 使用自定义的加载状态 Hook
@@ -81,7 +122,7 @@ const renderData = ref<ApiGroup[]>([])
 // 存储选中的 API ID
 const selectedApiId = ref<number | null>(null)
 // 选中的 API 对象
-const currApi = ref<ApiList | null>(null)
+const selectedApi = ref<ApiList | null>(null)
 // 获取数据的异步函数
 const fetchData = async () => {
     setLoading(true) // 开始加载
@@ -96,13 +137,101 @@ const fetchData = async () => {
 }
 
 const openApi = (api: ApiList) => {
-    console.log(api)
-    currApi.value = api // 将选中的 API 对象存储到响应式变量中
-    selectedApiId.value = api.id // 设置当前选中 API 的 ID
+    selectedApi.value = api
+    selectedApiId.value = api.id
+}
+
+const handleCancel = () => {
+    groupModalVisible.value = false
+}
+
+const handleBeforeOk = async (done: (closed: boolean) => void) => {
+    try {
+        const valid = await groupModalFormRef.value.validate()
+        if (valid === undefined) {
+            // 验证通过
+            const params = {
+                ...groupModalForm
+            }
+            setLoading(true) // 开始加载
+            if (params.id !== undefined && params.id > 0) {
+                // 编辑分组
+                const { data } = await updateApiGroup(params)
+                Message.success('分组信息更新成功')
+                done(true)
+                fetchData()
+            } else {
+                // 新增分组
+                const { data } = await addApiGroup(params)
+                Message.success('分组信息新增成功')
+                done(true)
+                fetchData()
+            }
+        } else {
+            // 表单验证失败
+            done(false) // 不关闭弹窗
+        }
+    } catch (err) {
+        Message.error('表单验证失败')
+        done(false)
+    }
+}
+
+// 新增和编辑分组弹窗的状态
+const groupModalVisible = ref(false)
+const groupModalForm = reactive({
+    id: 0,
+    groupName: ''
+})
+const groupModalFormRef = ref<any>()
+
+// 路由
+const router = useRouter()
+const route = useRoute()
+
+const { t } = useI18n()
+
+// 新增分组
+const addGroup = () => {
+    groupModalForm.id = 0
+    groupModalForm.groupName = ''
+    groupModalVisible.value = true
+}
+
+// 编辑分组
+const editGroup = (group: ApiGroup) => {
+    groupModalForm.id = group.id
+    groupModalForm.groupName = group.groupName
+    groupModalVisible.value = true
+}
+
+// 删除分组
+const deleteGroup = async (group: ApiGroup) => {
+    if (group.id !== undefined && group.id > 0) {
+        Modal.warning({
+            title: '删除确认',
+            content: '删除不可恢复，确认删除分组吗？',
+            okText: '确认',
+            cancelText: '取消',
+            hideCancel: false,
+            onOk: async () => {
+                const { data } = await deleteApiGroup(group)
+                if (data) {
+                    Message.success('分组删除成功')
+                    fetchData()
+                } else {
+                    Message.error('分组删除失败')
+                }
+            },
+            onCancel: () => {}
+        })
+    }
 }
 
 onMounted(() => {
-    fetchData()
+    nextTick(() => {
+        fetchData()
+    })
 })
 </script>
 
