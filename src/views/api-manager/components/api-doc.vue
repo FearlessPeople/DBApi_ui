@@ -1,18 +1,16 @@
 <template>
-    <div class="api-doc">
-        <div v-if="api">
-            <h2>{{ api.apiName }}</h2>
-            <p>接口路径: {{ api.apiPath }}</p>
-            <p>
-                发布时间: {{ api.publishTime }}&nbsp;&nbsp;创建时间: {{ api.createTime }}&nbsp;&nbsp;更新时间:
-                {{ api.updateTime }}&nbsp;&nbsp;创建者: {{ api.createBy }}
-            </p>
-            <p>接口说明:</p>
-            <p>{{ api.apiDesc }}</p>
-        </div>
-        <div v-else>
-            <p>请选择一个 API 以查看详情</p>
-        </div>
+    <div class="api-doc" v-if="api">
+        <h2>{{ api.apiName }}</h2>
+        <p>接口路径: {{ api.apiPath }}</p>
+        <p>
+            发布时间: {{ api.publishTime }}&nbsp;&nbsp;创建时间: {{ api.createTime }}&nbsp;&nbsp;更新时间:
+            {{ api.updateTime }}&nbsp;&nbsp;创建者: {{ api.createBy }}
+        </p>
+        <p>接口说明:</p>
+        <p>{{ api.apiDesc }}</p>
+    </div>
+    <div v-else>
+        <p>请选择一个 API 以查看详情</p>
     </div>
 </template>
 
