@@ -72,7 +72,7 @@
                         <a-button size="mini" type="outline" status="success">帮助文档</a-button>
                     </template>
                     <a-tab-pane key="1" title="接口文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
-                    <a-tab-pane key="2" title="接口设计"> Content of Tab Panel 2 </a-tab-pane>
+                    <a-tab-pane key="2" title="接口设计"> <ApiDesign :api="selectedApi"></ApiDesign></a-tab-pane>
                     <a-tab-pane key="3" title="运行接口"> Content of Tab Panel 3 </a-tab-pane>
                     <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
                 </a-tabs>
@@ -189,6 +189,7 @@ import {
 } from '@/api/apis'
 import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
+import ApiDesign from './components/api-design.vue'
 
 const keyWord = ref('') // 搜索关键字
 // 使用自定义的加载状态 Hook
