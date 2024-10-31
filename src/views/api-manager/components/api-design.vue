@@ -6,18 +6,18 @@
                 <span>{{ api.apiDesc }}</span>
             </div>
             <div class="api-header-right">
-                <a-button>
+                <a-link href="link">
                     <template #icon>
                         <icon-caret-right style="color: rgb(var(--green-6))" />
                     </template>
                     运行
-                </a-button>
-                <a-button>
+                </a-link>
+                <a-link href="link">
                     <template #icon>
                         <icon-save style="color: rgb(var(--arcoblue-6))" />
                     </template>
                     保存
-                </a-button>
+                </a-link>
             </div>
         </div>
 
@@ -36,7 +36,12 @@
                 />
                 <div class="api-design-center-bottom">
                     <span>成功 查询耗时2.3秒</span>
-                    <a-button type="text" size="small">查看执行结果</a-button>
+                    <a-link href="link">
+                        <template #icon>
+                            <icon-eye />
+                        </template>
+                        查看执行结果</a-link
+                    >
                 </div>
             </div>
             <div class="api-design-right">SQL参数</div>
