@@ -71,9 +71,9 @@
                         <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
                         <a-button size="mini" type="outline" status="success">帮助文档</a-button>
                     </template>
-                    <a-tab-pane key="1" title="文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
+                    <a-tab-pane key="1" title="接口文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
                     <a-tab-pane key="2" title="接口设计"> Content of Tab Panel 2 </a-tab-pane>
-                    <a-tab-pane key="3" title="运行"> Content of Tab Panel 3 </a-tab-pane>
+                    <a-tab-pane key="3" title="运行接口"> Content of Tab Panel 3 </a-tab-pane>
                     <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
                 </a-tabs>
             </a-layout-content>
