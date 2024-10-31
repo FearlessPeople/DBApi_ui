@@ -58,7 +58,7 @@
             </a-layout-sider>
             <a-layout-content>
                 <!-- 向 ApiDetail 组件传递 api 对象 -->
-                <ApiDetail :api="selectedApi" />
+                <ApiTab :api="currApi" />
             </a-layout-content>
         </a-layout>
     </div>
@@ -70,7 +70,7 @@ import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import { useRouter, useRoute } from 'vue-router'
 import { queryApiList, ApiGroup, ApiList } from '@/api/apis'
-import ApiDetail from './components/api-detail.vue'
+import ApiTab from './components/api-tab.vue'
 
 const searchKey = ref('') // 搜索关键字
 // 使用自定义的加载状态 Hook
@@ -79,7 +79,7 @@ const { loading, setLoading } = useLoading(true)
 // 定义渲染数据的响应式变量
 const renderData = ref<ApiGroup[]>([])
 
-const selectedApi = ref<ApiList | null>(null) // 选中的 API 对象
+const currApi = ref<ApiList | null>(null) // 选中的 API 对象
 // 获取数据的异步函数
 const fetchData = async () => {
     setLoading(true) // 开始加载
@@ -94,7 +94,8 @@ const fetchData = async () => {
 }
 
 const openApi = (api: ApiList) => {
-    selectedApi.value = api // 将选中的 API 对象存储到响应式变量中
+    console.log(api)
+    currApi.value = api // 将选中的 API 对象存储到响应式变量中
 }
 
 onMounted(() => {
