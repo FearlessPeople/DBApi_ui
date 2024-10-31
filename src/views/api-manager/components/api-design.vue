@@ -12,7 +12,7 @@
                 <Codemirror
                     v-model="code"
                     placeholder="请在这里输入SQL语句..."
-                    :style="{ height: '400px' }"
+                    :style="{ height: 'calc(100vh - 205px)' }"
                     :autofocus="true"
                     :indent-with-tab="true"
                     :tab-size="2"
