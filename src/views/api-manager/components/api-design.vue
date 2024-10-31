@@ -43,6 +43,7 @@ const route = useRoute() // 获取当前路由对象
 
     .api-design-center {
         display: flex;
+        height: calc(100vh - 205px);
 
         .api-design-left,
         .api-design-center-content,
