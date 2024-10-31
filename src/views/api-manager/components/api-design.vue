@@ -11,6 +11,9 @@
             <div class="api-design-right">api-design-right</div>
         </div>
     </div>
+    <div v-else>
+        <h4>请选择一个 API 以查看详情</h4>
+    </div>
 </template>
 
 <script setup lang="ts">

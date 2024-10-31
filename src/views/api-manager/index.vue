@@ -369,6 +369,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+:deep(.arco-tabs-content) {
+    padding-top: 0px;
+}
+
 .layout-demo {
     height: calc(100vh - 95px); // 设置高度为减去导航栏后的视口高度
 }

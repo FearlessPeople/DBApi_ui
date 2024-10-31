@@ -10,7 +10,7 @@
         <p>{{ api.apiDesc }}</p>
     </div>
     <div v-else>
-        <p>请选择一个 API 以查看详情</p>
+        <h4>请选择一个 API 以查看详情</h4>
     </div>
 </template>
 
