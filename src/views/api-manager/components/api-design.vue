@@ -6,45 +6,79 @@
                 <span>{{ api.apiDesc }}</span>
             </div>
             <div class="api-header-right">
-                <a-link href="link">
-                    <template #icon>
-                        <icon-caret-right style="color: rgb(var(--green-6))" />
-                    </template>
-                    运行
-                </a-link>
-                <a-link href="link">
-                    <template #icon>
-                        <icon-save style="color: rgb(var(--arcoblue-6))" />
-                    </template>
-                    保存
-                </a-link>
+                <p class="header-help">
+                    <icon-info-circle />本项目只支持SELECT语句，请尽量编写标准SQL，如果不了解SQL语法，可参考
+                    <a-link href="https://www.runoob.com/sql/sql-syntax.html" target="_blank">菜鸟教程</a-link>
+                </p>
             </div>
         </div>
 
         <div class="api-design-center">
-            <div class="api-design-left">数据源及表列表</div>
-            <div class="api-design-center-content">
-                <Codemirror
-                    v-model="code"
-                    placeholder="请在这里输入SQL语句..."
-                    :style="{ height: 'calc(100vh - 240px)' }"
-                    :autofocus="true"
-                    :indent-with-tab="true"
-                    :tab-size="2"
-                    :extensions="extensions"
-                    @ready="handleReady"
-                />
-                <div class="api-design-center-bottom">
-                    <span>成功 查询耗时2.3秒</span>
-                    <a-link href="link">
-                        <template #icon>
-                            <icon-eye />
-                        </template>
-                        查看执行结果</a-link
-                    >
-                </div>
+            <div class="api-design-left">
+                <a-card title="数据源列表" style="height: 100%">
+                    <template #extra>
+                        <a-link>More</a-link>
+                    </template>
+                    <a-select placeholder="请选择一个数据源 ...">
+                        <a-option>Beijing</a-option>
+                        <a-option>Shanghai</a-option>
+                        <a-option>Guangzhou</a-option>
+                        <a-option disabled>Disabled</a-option>
+                    </a-select>
+                    <a-tree :data="treeData" :default-expanded-keys="['0-0-0']" :default-selected-keys="['0-0-0', '0-0-1']" />
+                </a-card>
             </div>
-            <div class="api-design-right">SQL参数</div>
+            <div class="api-design-center-content">
+                <a-card title="接口SQL编辑区">
+                    <template #extra>
+                        <div class="api-design-center-bottom">
+                            <a-link href="link">
+                                <template #icon>
+                                    <icon-caret-right style="color: rgb(var(--green-6))" />
+                                </template>
+                                运行
+                            </a-link>
+                            <a-link href="link">
+                                <template #icon>
+                                    <icon-save style="color: rgb(var(--arcoblue-6))" />
+                                </template>
+                                保存
+                            </a-link>
+                            <a-link href="link">
+                                <template #icon>
+                                    <icon-eye />
+                                </template>
+                                查看执行结果</a-link
+                            >
+                            <span>成功 查询耗时2.3秒</span>
+                        </div>
+                    </template>
+                    <Codemirror
+                        v-model="code"
+                        placeholder="请在这里输入SQL语句..."
+                        :style="{ height: 'calc(100vh - 240px)' }"
+                        :autofocus="true"
+                        :indent-with-tab="true"
+                        :tab-size="2"
+                        :extensions="extensions"
+                        @ready="handleReady"
+                    />
+                </a-card>
+            </div>
+            <div class="api-design-right">
+                <a-card title="接口参数" style="height: 100%; padding: 0px">
+                    <template #extra>
+                        <a-link>新建</a-link>
+                    </template>
+                    <a-select placeholder="请选择一个数据源 ...">
+                        <a-option>Beijing</a-option>
+                        <a-option>Shanghai</a-option>
+                        <a-option>Guangzhou</a-option>
+                        <a-option disabled>Disabled</a-option>
+                    </a-select>
+                    <a-tree :data="treeData" :default-expanded-keys="['0-0-0']" :default-selected-keys="['0-0-0', '0-0-1']" />
+                </a-card>
+            </div>
         </div>
     </div>
     <div v-else>
@@ -87,6 +121,40 @@ const getCodemirrorStates = () => {
     const { state } = view.value
     const { ranges } = state.selection
 }
+
+const treeData = [
+    {
+        title: 'Trunk 0-0',
+        key: '0-0',
+        children: [
+            {
+                title: 'Branch 0-0-0',
+                key: '0-0-0',
+                disabled: true,
+                children: [
+                    {
+                        title: 'Leaf',
+                        key: '0-0-0-0'
+                    },
+                    {
+                        title: 'Leaf',
+                        key: '0-0-0-1'
+                    }
+                ]
+            },
+            {
+                title: 'Branch 0-0-1',
+                key: '0-0-1',
+                children: [
+                    {
+                        title: 'Leaf',
+                        key: '0-0-1-0'
+                    }
+                ]
+            }
+        ]
+    }
+]
 </script>
 
 <style lang="less" scoped>
@@ -107,8 +175,8 @@ const getCodemirrorStates = () => {
         .api-header-right {
             display: flex;
             align-items: center;
-            button {
-                margin-left: 10px;
+            .header-help {
+                color: var(--color-neutral-6);
             }
         }
     }
@@ -125,21 +193,23 @@ const getCodemirrorStates = () => {
 
         .api-design-left {
             width: 15%;
-            border: 1px solid var(--color-neutral-3);
+            // border: 1px solid var(--color-neutral-3);
         }
 
         .api-design-center-content {
             width: 70%;
+            :deep(.arco-card-body) {
+                padding: 0px;
+            }
             .api-design-center-bottom {
+                color: #999;
                 height: 35px;
                 line-height: 35px;
                 padding-left: 10px;
-                border: 1px solid var(--color-neutral-3);
             }
         }
 
         .api-design-right {
-            border: 1px solid var(--color-neutral-3);
             width: 15%;
         }
     }
