@@ -26,6 +26,16 @@ export interface RoleListRes {
     total: number
 }
 
+// 所有数据源列表
+export function allDbList() {
+    return axios.get<DataSourceRecord[]>('/api/db/allList')
+}
+
+// 所有数据源列表
+export function allTables(id: number) {
+    return axios.get<number, ApiResponse<string[]>>(`/api/db/tables?id=${id}`)
+}
+
 // 分页数据源列表
 export function pageDataSourceList(params: DataSourceParams) {
     return axios.post<PageDataResponse<DataSourceRecord>>(

@@ -16,16 +16,18 @@
         <div class="api-design-center">
             <div class="api-design-left">
                 <a-card title="数据源列表" style="height: 100%">
-                    <template #extra>
-                        <a-link>More</a-link>
-                    </template>
-                    <a-select placeholder="请选择一个数据源 ...">
-                        <a-option>Beijing</a-option>
-                        <a-option>Shanghai</a-option>
-                        <a-option>Guangzhou</a-option>
-                        <a-option disabled>Disabled</a-option>
+                    <template #extra> </template>
+                    <a-select
+                        v-model="dataSourceId"
+                        placeholder="请选择一个数据源"
+                        allow-clear
+                        @change="handleDataSourceChange()"
+                    >
+                        <a-option v-for="db in allDataSourcesList" :key="db.id" :value="db.id">
+                            {{ db.name }}
+                        </a-option>
                     </a-select>
-                    <a-tree :data="treeData" :default-expanded-keys="['0-0-0']" :default-selected-keys="['0-0-0', '0-0-1']" />
+                    <a-tree :showLine="true" :data="treeData" :default-expanded-keys="['0']" />
                 </a-card>
             </div>
             <div class="api-design-center-content">
@@ -70,12 +72,6 @@
                     <template #extra>
                         <a-link>新建</a-link>
                     </template>
-                    <a-select placeholder="请选择一个数据源 ...">
-                        <a-option>Beijing</a-option>
-                        <a-option>Shanghai</a-option>
-                        <a-option>Guangzhou</a-option>
-                        <a-option disabled>Disabled</a-option>
-                    </a-select>
                     <a-tree :data="treeData" :default-expanded-keys="['0-0-0']" :default-selected-keys="['0-0-0', '0-0-1']" />
                 </a-card>
             </div>
@@ -85,13 +81,13 @@
         <h4>请选择一个 API 以查看详情</h4>
     </div>
 </template>
-
 <script setup lang="ts">
-import { ref, watch, reactive, shallowRef, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Codemirror } from 'vue-codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
-
+import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
+import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
 import { ApiList } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 
@@ -122,39 +118,55 @@ const getCodemirrorStates = () => {
     const { ranges } = state.selection
 }
 
-const treeData = [
+// 定义树形节点的类型
+interface TreeNode {
+    title: string
+    key: string
+    children?: TreeNode[]
+}
+
+// 初始化树形数据
+const treeData = reactive<TreeNode[]>([
     {
-        title: 'Trunk 0-0',
-        key: '0-0',
-        children: [
-            {
-                title: 'Branch 0-0-0',
-                key: '0-0-0',
-                disabled: true,
-                children: [
-                    {
-                        title: 'Leaf',
-                        key: '0-0-0-0'
-                    },
-                    {
-                        title: 'Leaf',
-                        key: '0-0-0-1'
-                    }
-                ]
-            },
-            {
-                title: 'Branch 0-0-1',
-                key: '0-0-1',
-                children: [
-                    {
-                        title: 'Leaf',
-                        key: '0-0-1-0'
-                    }
-                ]
-            }
-        ]
+        title: '数据库表清单',
+        key: '0',
+        children: []
     }
-]
+])
+
+const dataSourceId = ref(1)
+
+// 获取数据源下的所有表
+const fetchTableList = async () => {
+    const res = await allTables(dataSourceId.value)
+    treeData[0].children = res.data.map((table, index) => ({
+        title: table,
+        key: `0-${index}`,
+        icon: () => h(IconStorage)
+    }))
+}
+
+// 处理数据源切换
+const handleDataSourceChange = async () => {
+    fetchTableList()
+}
+
+// 初始化所有数据源列表
+const allDataSourcesList = ref<DataSourceRecord[]>([])
+
+// 获取所有数据库列表
+const fetchAllDBList = async () => {
+    const { data } = await allDbList()
+    allDataSourcesList.value = data
+    fetchTableList()
+}
+
+// 在组件挂载时获取数据
+onMounted(() => {
+    nextTick(() => {
+        fetchAllDBList()
+    })
+})
 </script>
 
 <style lang="less" scoped>
