@@ -73,6 +73,7 @@
                     <template #extra>
                         <a-link>新建</a-link>
                     </template>
+                    <ApiSqlParam :api="api" />
                 </a-card>
             </div>
         </div>
@@ -91,6 +92,7 @@ import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
 import { ApiList, getApiSql } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
+import ApiSqlParam from './api-sql-param.vue'
 
 // 接收父组件传递的 API 对象
 const props = defineProps<{
@@ -238,6 +240,9 @@ watch(
         .api-design-center-content,
         .api-design-right {
             height: 100%;
+            :deep(.arco-card-body) {
+                padding: 0px;
+            }
         }
 
         .api-design-left {
