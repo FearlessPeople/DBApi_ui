@@ -29,7 +29,7 @@ export interface RoleListRes {
 // 分页数据源列表
 export function pageDataSourceList(params: DataSourceParams) {
     return axios.post<PageDataResponse<DataSourceRecord>>(
-        '/api/datasource/list',
+        '/api/db/list',
         qs.stringify(params), // 将参数序列化为 URL 编码格式
         {
             headers: {
@@ -41,12 +41,12 @@ export function pageDataSourceList(params: DataSourceParams) {
 
 // 新增数据源
 export function createDataSource(params: DataSourceRecord) {
-    return axios.post<any, ApiResponse<string>>('/api/datasource/add', params)
+    return axios.post<any, ApiResponse<string>>('/api/db/add', params)
 }
 
 // 测试数据源
 export function testDataSource(params: DataSourceRecord) {
-    return axios.post<any, ApiResponse<string>>('/api/datasource/test', params)
+    return axios.post<any, ApiResponse<string>>('/api/db/test', params)
 }
 
 // 删除数据源
@@ -56,7 +56,7 @@ export function deleteRole(id: number) {
 
 // 更新数据源
 export function editDataSource(params: DataSourceRecord) {
-    return axios.post<any, ApiResponse<string>>('/api/datasource/edit', params)
+    return axios.post<any, ApiResponse<string>>('/api/db/edit', params)
 }
 
 // 获取数据源下所有权限
