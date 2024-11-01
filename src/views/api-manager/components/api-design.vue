@@ -73,7 +73,6 @@
                     <template #extra>
                         <a-link>新建</a-link>
                     </template>
-                    <a-tree :data="treeData" :default-expanded-keys="['0-0-0']" :default-selected-keys="['0-0-0', '0-0-1']" />
                 </a-card>
             </div>
         </div>
@@ -242,12 +241,12 @@ watch(
         }
 
         .api-design-left {
-            width: 15%;
+            width: 20%;
             // border: 1px solid var(--color-neutral-3);
         }
 
         .api-design-center-content {
-            width: 70%;
+            width: 65%;
             :deep(.arco-card-body) {
                 padding: 0px;
             }
