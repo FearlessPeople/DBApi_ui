@@ -2,8 +2,9 @@
     <div class="api-design" v-if="api">
         <div class="api-header">
             <div class="api-header-left">
-                <h2>{{ api.apiName }}</h2>
-                <span>{{ api.apiDesc }}</span>
+                <h2>
+                    <icon-code style="color: rgb(var(--green-6))" />{{ api.apiName }}&nbsp;&nbsp;<a-tag>{{ api.id }}</a-tag>
+                </h2>
             </div>
             <div class="api-header-right">
                 <p class="header-help">
@@ -34,7 +35,7 @@
                 <a-card title="接口SQL编辑区">
                     <template #extra>
                         <div class="api-design-center-bottom">
-                            <a-link href="link">
+                            <a-link @click="executeSql()">
                                 <template #icon>
                                     <icon-caret-right style="color: rgb(var(--green-6))" />
                                 </template>
@@ -82,13 +83,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onActivated, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Codemirror } from 'vue-codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
+import { Message } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
-import { ApiList } from '@/api/apis'
+import { ApiList, getApiSql } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 
 // 接收父组件传递的 API 对象
@@ -99,9 +101,7 @@ const props = defineProps<{
 const router = useRouter() // 获取路由实例
 const route = useRoute() // 获取当前路由对象
 
-const code = ref(
-    `select * from ods.ods_local_cw_clinic_zxp t where 1=1 and batch_no = '20240920133320428691' and brand_code ='AA0292';`
-)
+const code = ref(`SELECT * FROM table_name`)
 const extensions = [sql(), oneDark]
 
 // Codemirror EditorView instance ref
@@ -161,12 +161,53 @@ const fetchAllDBList = async () => {
     fetchTableList()
 }
 
+const reset = () => {
+    code.value = `SELECT * FROM table_name`
+    dataSourceId.value = 1
+    fetchAllDBList()
+}
+
+// 初始化加载数据
+const init = async () => {
+    reset()
+    // 检查 props.api 是否为 null
+    if (props.api && props.api.id) {
+        // 获取 API 详情
+        const { data } = await getApiSql(props.api.id)
+        if (data) {
+            code.value = data.apiSql
+            dataSourceId.value = data.datasourceId
+            // 获取所有数据库列表
+            fetchAllDBList()
+        }
+    }
+}
+
+const executeSql = async () => {
+    // 获取当前codemirror编辑器的文本内容
+    const sqlText = view.value.state.doc.toString()
+    // 执行SQL语句
+    // const res = await getApiSql(props.api!.id, { apiSql: sqlText, datasourceId: dataSourceId.value })
+    Message.success(sqlText)
+}
+
+// 使用 defineExpose 公开 init 方法
+defineExpose({ init })
+
 // 在组件挂载时获取数据
 onMounted(() => {
-    nextTick(() => {
-        fetchAllDBList()
-    })
+    init()
 })
+
+// 监听 api 对象的变化并重新调用 init 方法
+watch(
+    () => props.api,
+    (newApi, oldApi) => {
+        if (newApi !== oldApi) {
+            init()
+        }
+    }
+)
 </script>
 
 <style lang="less" scoped>
@@ -180,9 +221,6 @@ onMounted(() => {
         .api-header-left {
             display: flex;
             align-items: center;
-            span {
-                margin-left: 20px;
-            }
         }
         .api-header-right {
             display: flex;

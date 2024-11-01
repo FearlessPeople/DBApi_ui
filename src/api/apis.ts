@@ -17,6 +17,18 @@ export interface ApiList {
     updateTime?: Date // 更新时间
 }
 
+// ApiSQL 接口
+export interface ApiSql {
+    id: number // 自增ID
+    apiId: number // 接口ID
+    apiSql: string // 接口SQL
+    apiParams: string // 接口参数
+    apiSqlDesc: string // 接口SQL描述
+    datasourceId: number // 数据源ID
+    createTime?: Date // 创建时间
+    updateTime?: Date // 更新时间
+}
+
 // ApiGroup 接口
 export interface ApiGroup {
     id: number // 自增ID
@@ -34,6 +46,10 @@ export function queryApiList(keyWord: string) {
 // 新增接口
 export function addApiList(apiList: ApiList) {
     return axios.post<PageDataResponse<ApiList>>('/api/apiList/add', apiList)
+}
+// 根据api_id获取接口详情
+export function getApiSql(apiId: number) {
+    return axios.get<ApiSql>(`/api/sql/getSql?apiId=${apiId}`)
 }
 
 // 获取所有分组列表

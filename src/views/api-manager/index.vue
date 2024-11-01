@@ -66,13 +66,17 @@
                 </div>
             </a-layout-sider>
             <a-layout-content>
-                <a-tabs trigger="hover">
+                <a-tabs trigger="hover" @change="handleTabChange">
                     <template #extra>
                         <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
                         <a-button size="mini" type="outline" status="success">帮助文档</a-button>
                     </template>
-                    <a-tab-pane key="1" title="接口文档"> <ApiDoc :api="selectedApi"></ApiDoc> </a-tab-pane>
-                    <a-tab-pane key="2" title="接口设计"> <ApiDesign :api="selectedApi"></ApiDesign></a-tab-pane>
+                    <a-tab-pane key="1" title="接口文档">
+                        <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
+                    </a-tab-pane>
+                    <a-tab-pane key="2" title="接口设计">
+                        <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
+                    </a-tab-pane>
                     <a-tab-pane key="3" title="接口调用"> Content of Tab Panel 3 </a-tab-pane>
                     <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
                 </a-tabs>
@@ -353,6 +357,18 @@ const groupList = ref<ApiGroup[]>([])
 const fetchGroupList = async () => {
     const { data } = await queryApiGroupList()
     groupList.value = data
+}
+
+// 通过 ref 引用子组件
+const apiDoc = ref(null)
+const apiDesign = ref(null)
+
+const handleTabChange = (key: string) => {
+    if (key === '1' && apiDoc.value) {
+        apiDoc.value.init()
+    } else if (key === '2' && apiDesign.value) {
+        apiDesign.value.init()
+    }
 }
 
 onMounted(() => {

@@ -1,6 +1,9 @@
 <template>
     <div class="api-doc" v-if="api">
-        <h2>{{ api.apiName }}</h2>
+        <h2>
+            <icon-code style="color: rgb(var(--green-6))" />{{ api.apiName }}&nbsp;&nbsp;<a-tag>{{ api.id }}</a-tag>
+        </h2>
+        <p>接口ID: {{ api.id }}</p>
         <p>接口路径: {{ api.apiPath }}</p>
         <p>
             发布时间: {{ api.publishTime }}&nbsp;&nbsp;创建时间: {{ api.createTime }}&nbsp;&nbsp;更新时间:
@@ -24,8 +27,12 @@ const props = defineProps<{
     api: ApiList | null
 }>()
 
-const router = useRouter() // 获取路由实例
-const route = useRoute() // 获取当前路由对象
+const init = () => {
+    console.log('ApiDoc 初始化')
+    // 其他初始化逻辑
+}
+// 使用 defineExpose 公开 init 方法
+defineExpose({ init })
 </script>
 
 <style scoped lang="less">
