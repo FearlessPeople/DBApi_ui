@@ -313,7 +313,7 @@ const createApiForm: ApiList = reactive({
     apiName: '',
     apiPath: '',
     apiDesc: '',
-    apiGroup: 1
+    apiGroup: null
 })
 const createApiFormRef = ref<any>()
 
@@ -326,7 +326,7 @@ const createApi = () => {
     createApiForm.apiName = ''
     createApiForm.apiPath = ''
     createApiForm.apiDesc = ''
-    createApiForm.apiGroup = 1
+    createApiForm.apiGroup = null
     createApiModalVisible.value = true
 }
 
