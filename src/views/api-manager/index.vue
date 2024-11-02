@@ -313,7 +313,7 @@ const createApiForm: ApiList = reactive({
     apiName: '',
     apiPath: '',
     apiDesc: '',
-    apiGroup: null
+    apiGroup: 1
 })
 const createApiFormRef = ref<any>()
 
@@ -322,12 +322,12 @@ const createHandleCancel = () => {
 }
 
 const createApi = () => {
-    fetchGroupList()
     createApiForm.apiName = ''
     createApiForm.apiPath = ''
     createApiForm.apiDesc = ''
-    createApiForm.apiGroup = null
+    createApiForm.apiGroup = 1
     createApiModalVisible.value = true
+    fetchGroupList()
 }
 
 const craeteHandleBeforeOk = async (done: (closed: boolean) => void) => {
@@ -357,6 +357,12 @@ const groupList = ref<ApiGroup[]>([])
 const fetchGroupList = async () => {
     const { data } = await queryApiGroupList()
     groupList.value = data
+    // 检查 createApiForm.apiGroup 是否在 groupList 中
+    const isValidGroup = groupList.value.some(group => group.id === createApiForm.apiGroup)
+    if (!isValidGroup && groupList.value.length > 0) {
+        // 设置为第一个有效分组的 ID，避免因为id不同，在前端页面select下拉列表中多显示出无效值
+        createApiForm.apiGroup = groupList.value[0].id
+    }
 }
 
 // 通过 ref 引用子组件
