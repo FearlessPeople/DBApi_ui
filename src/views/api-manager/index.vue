@@ -360,10 +360,10 @@ const fetchGroupList = async () => {
 }
 
 // 通过 ref 引用子组件
-const apiDoc = ref(null)
-const apiDesign = ref(null)
+const apiDoc = ref<InstanceType<typeof ApiDoc> | null>(null)
+const apiDesign = ref<InstanceType<typeof ApiDesign> | null>(null)
 
-const handleTabChange = (key: string) => {
+const handleTabChange = (key: string | number) => {
     if (key === '1' && apiDoc.value) {
         apiDoc.value.init()
     } else if (key === '2' && apiDesign.value) {
