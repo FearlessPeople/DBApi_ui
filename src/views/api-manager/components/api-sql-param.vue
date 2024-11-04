@@ -1,8 +1,8 @@
 <template>
-    <a-card title="接口参数" style="height: 100%; padding: 0px">
+    <a-card title="参数参数" style="height: 100%; padding: 0px">
         <template #extra>
-            <a-tooltip content="点击新建接口参数">
-                <a-link><icon-plus /></a-link>
+            <a-tooltip content="点击新建参数参数">
+                <a-link @click="createParamModalVisible = true"><icon-plus /></a-link>
             </a-tooltip>
         </template>
 
@@ -30,6 +30,73 @@
             <h4>请选择一个 API 以查看详情</h4>
         </div>
     </a-card>
+
+    <!-- 新增参数弹窗 -->
+    <a-modal
+        v-model:visible="createParamModalVisible"
+        title="新增SQL参数"
+        @cancel="createHandleCancel"
+        @before-ok="craeteHandleBeforeOk"
+        draggable
+    >
+        <a-form :model="createParamForm" ref="createParamFormRef">
+            <a-form-item
+                field="paramName"
+                label="参数名称"
+                :rules="[
+                    {
+                        required: true,
+                        message: '参数名称不能为空'
+                    },
+                    {
+                        match: /^[a-zA-Z0-9_]+$/,
+                        message: '参数名称只能包含字母、数字、下划线'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-input v-model="createParamForm.paramName" placeholder="请输入参数名称..." />
+            </a-form-item>
+            <a-form-item
+                field="required"
+                label="必填"
+                :rules="[
+                    {
+                        required: true,
+                        message: '必须选一个类型'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-radio-group v-model="createParamForm.required">
+                    <a-radio value="0">是</a-radio>
+                    <a-radio value="1">否</a-radio>
+                </a-radio-group>
+            </a-form-item>
+            <a-form-item
+                field="paramType"
+                label="参数类型"
+                :rules="[
+                    {
+                        required: true,
+                        message: '参数类型不能为空'
+                    }
+                ]"
+                :validate-trigger="['blur']"
+            >
+                <a-select v-model="createParamForm.paramType" placeholder="请选择参数类型" allow-clear>
+                    <a-option>字符串</a-option>
+                    <a-option>数字</a-option>
+                    <a-option>布尔</a-option>
+                    <a-option>日期</a-option>
+                    <a-option>SQL表达式</a-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item field="paramDefault" label="默认值">
+                <a-textarea v-model="createParamForm.paramDefault" />
+            </a-form-item>
+        </a-form>
+    </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -139,6 +206,32 @@ const executeSql = async () => {
     // 执行SQL语句
     // const res = await getApiSql(props.api!.id, { apiSql: sqlText, datasourceId: dataSourceId.value })
     Message.success(sqlText)
+}
+
+// 新增参数弹窗状态变量
+const createParamModalVisible = ref(false)
+
+// 新增参数弹窗表单数据
+const createParamForm = reactive({
+    paramName: '',
+    required: 1,
+    paramType: '字符串',
+    paramDefault: ''
+})
+
+// 新增参数弹窗表单校验方法
+const createParamFormRef = ref<any>()
+
+const createHandleCancel = () => {
+    createParamModalVisible.value = false
+}
+
+const craeteHandleBeforeOk = async () => {
+    const isValid = await createParamFormRef.value.validate()
+    if (!isValid) {
+        return false
+    }
+    return true
 }
 
 // 使用 defineExpose 公开 init 方法
