@@ -1,23 +1,21 @@
 <template>
     <div class="api-sql-param" v-if="api">
         <div class="param-list">
-            <div class="param-item">
-                <a-tooltip content="brand_code">
-                    <div class="param-item-label">brand_code</div>
+            <div
+                class="param-item"
+                v-for="(item, index) in items"
+                :key="index"
+                @mouseover="showButtons(index)"
+                @mouseout="hideButtons()"
+            >
+                <a-tooltip :content="item.content">
+                    <div class="param-item-label">
+                        {{ item.label }}
+                    </div>
                 </a-tooltip>
-
-                <div class="param-item-operation">
-                    <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit />编辑</a-button>
-                    <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete />删除</a-button>
-                </div>
-            </div>
-            <div class="param-item">
-                <a-tooltip content="brand_code222222222222">
-                    <div class="param-item-label">brand_code222222222222</div>
-                </a-tooltip>
-                <div class="param-item-operation">
-                    <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit />编辑</a-button>
-                    <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete />删除</a-button>
+                <div class="param-item-operation" v-if="showButtonsIndex === index">
+                    <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit /></a-button>
+                    <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete /></a-button>
                 </div>
             </div>
         </div>
@@ -26,6 +24,7 @@
         <h4>请选择一个 API 以查看详情</h4>
     </div>
 </template>
+
 <script setup lang="ts">
 import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onActivated, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -152,6 +151,23 @@ watch(
         }
     }
 )
+
+// 新增状态变量和方法
+const showButtonsIndex = ref(-1)
+
+const showButtons = (index: number) => {
+    showButtonsIndex.value = index
+}
+
+const hideButtons = () => {
+    showButtonsIndex.value = -1
+}
+
+// 示例数据
+const items = [
+    { label: 'brand_code', content: 'brand_code' },
+    { label: 'brand_code222222222222', content: 'brand_code222222222222' }
+]
 </script>
 
 <style lang="less" scoped>
@@ -162,23 +178,23 @@ watch(
         flex-direction: column;
         .param-item {
             display: flex;
-            flex-direction: column; /* 垂直布局 */
-            align-items: flex-start; /* 内容居左 */
-            padding: 5px 10px;
+            flex-direction: row; /* 水平布局 */
+            align-items: center; /* 垂直居中 */
+            padding: 10px 10px;
             border-bottom: 1px solid #e8e8e8;
 
             .param-item-label {
                 padding-left: 10px;
                 font-weight: bold;
                 overflow: hidden;
-                width: 80%;
+                width: 50%;
                 // 设置超出显示省略号
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }
 
             .param-item-operation {
-                margin-top: 10px;
+                margin-left: auto; /* 将操作按钮推到最右边 */
                 display: flex;
                 gap: 8px; /* 按钮间距 */
                 text-align: left; /* 确保按钮内容左对齐 */
