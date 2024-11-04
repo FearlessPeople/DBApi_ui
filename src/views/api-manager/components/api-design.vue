@@ -69,12 +69,7 @@
                 </a-card>
             </div>
             <div class="api-design-right">
-                <a-card title="接口参数" style="height: 100%; padding: 0px">
-                    <template #extra>
-                        <a-link>新建</a-link>
-                    </template>
-                    <ApiSqlParam :api="api" />
-                </a-card>
+                <ApiSqlParam :api="api" />
             </div>
         </div>
     </div>

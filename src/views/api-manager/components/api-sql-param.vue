@@ -1,28 +1,35 @@
 <template>
-    <div class="api-sql-param" v-if="api">
-        <div class="param-list">
-            <div
-                class="param-item"
-                v-for="(item, index) in items"
-                :key="index"
-                @mouseover="showButtons(index)"
-                @mouseout="hideButtons()"
-            >
-                <a-tooltip :content="item.content">
-                    <div class="param-item-label">
-                        {{ item.label }}
+    <a-card title="接口参数" style="height: 100%; padding: 0px">
+        <template #extra>
+            <a-tooltip content="点击新建接口参数">
+                <a-link><icon-plus /></a-link>
+            </a-tooltip>
+        </template>
+
+        <div class="api-sql-param" v-if="api">
+            <div class="param-list">
+                <div class="param-item" v-for="(item, index) in items" :key="index">
+                    <a-tooltip :content="item.content">
+                        <div class="param-item-label">
+                            {{ item.label }}
+                        </div>
+                    </a-tooltip>
+                    <div class="param-item-operation">
+                        <a-tooltip content="编辑该参数">
+                            <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit /></a-button>
+                        </a-tooltip>
+
+                        <a-tooltip content="删除该参数">
+                            <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete /></a-button>
+                        </a-tooltip>
                     </div>
-                </a-tooltip>
-                <div class="param-item-operation" v-if="showButtonsIndex === index">
-                    <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit /></a-button>
-                    <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete /></a-button>
                 </div>
             </div>
         </div>
-    </div>
-    <div v-else>
-        <h4>请选择一个 API 以查看详情</h4>
-    </div>
+        <div v-else>
+            <h4>请选择一个 API 以查看详情</h4>
+        </div>
+    </a-card>
 </template>
 
 <script setup lang="ts">
@@ -182,6 +189,7 @@ const items = [
             align-items: center; /* 垂直居中 */
             padding: 10px 10px;
             border-bottom: 1px solid #e8e8e8;
+            height: 50px;
 
             .param-item-label {
                 padding-left: 10px;

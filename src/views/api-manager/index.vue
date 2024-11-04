@@ -22,7 +22,7 @@
                             <a-tooltip content="新建接口分组">
                                 <a-button type="text" @click="addGroup()">
                                     <template #icon>
-                                        <icon-plus />
+                                        <icon-folder-add />
                                     </template>
                                 </a-button>
                             </a-tooltip>
