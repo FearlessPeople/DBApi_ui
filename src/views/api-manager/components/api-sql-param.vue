@@ -2,14 +2,19 @@
     <div class="api-sql-param" v-if="api">
         <div class="param-list">
             <div class="param-item">
-                <div class="param-item-label">brand_code</div>
+                <a-tooltip content="brand_code">
+                    <div class="param-item-label">brand_code</div>
+                </a-tooltip>
+
                 <div class="param-item-operation">
                     <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit />编辑</a-button>
                     <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete />删除</a-button>
                 </div>
             </div>
             <div class="param-item">
-                <div class="param-item-label">brand_code222222222222</div>
+                <a-tooltip content="brand_code222222222222">
+                    <div class="param-item-label">brand_code222222222222</div>
+                </a-tooltip>
                 <div class="param-item-operation">
                     <a-button type="dashed" size="mini" shape="round" status="warning"><icon-edit />编辑</a-button>
                     <a-button type="dashed" size="mini" shape="round" status="danger"><icon-delete />删除</a-button>
@@ -165,6 +170,11 @@ watch(
             .param-item-label {
                 padding-left: 10px;
                 font-weight: bold;
+                overflow: hidden;
+                width: 80%;
+                // 设置超出显示省略号
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
 
             .param-item-operation {
