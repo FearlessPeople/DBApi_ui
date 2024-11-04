@@ -1,7 +1,7 @@
 <template>
     <a-card title="SQL参数" style="height: 100%; padding: 0px">
         <template #extra>
-            <a-tooltip content="点击新建参数参数">
+            <a-tooltip content="点击新建SQL参数">
                 <a-link @click="createParamModalVisible = true"><icon-plus /></a-link>
             </a-tooltip>
         </template>
@@ -214,7 +214,7 @@ const createParamModalVisible = ref(false)
 // 新增参数弹窗表单数据
 const createParamForm = reactive({
     paramName: '',
-    required: 1,
+    required: '0',
     paramType: '字符串',
     paramDefault: ''
 })
