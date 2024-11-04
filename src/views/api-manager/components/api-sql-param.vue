@@ -1,5 +1,5 @@
 <template>
-    <a-card title="参数参数" style="height: 100%; padding: 0px">
+    <a-card title="SQL参数" style="height: 100%; padding: 0px">
         <template #extra>
             <a-tooltip content="点击新建参数参数">
                 <a-link @click="createParamModalVisible = true"><icon-plus /></a-link>
