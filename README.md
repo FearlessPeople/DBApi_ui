@@ -1,5 +1,17 @@
 # DBApi
 
+## 技术栈
+
+项目使用了以下主要技术和库：
+
+框架：Vue 3
+UI库：Arco Design
+状态管理：Pinia
+路由管理：Vue Router
+API请求：Axios
+构建工具：Vite
+类型检查：TypeScript
+代码规范：ESLint, Prettier, Commitlint
 
 
 ## 项目文件说明
@@ -43,4 +55,19 @@ src                  # 源码目录
   ├── types          # 全局类型声明目录，定义项目中使用的类型
   ├── utils          # 工具函数目录，封装常用的辅助函数
   ├── views          # 视图组件目录，定义应用的各个页面
+```
+
+## 使用说明
+
+### 本地运行
+    
+```bash
+npm install
+npm run dev
+```
+
+### 打包运行
+
+```bash
+npm run build
 ```
