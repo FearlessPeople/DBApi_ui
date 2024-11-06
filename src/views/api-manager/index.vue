@@ -148,7 +148,7 @@
                 ]"
                 :validate-trigger="['blur']"
             >
-                <span style="background-color: #e2ffe8">http://localhost:8080/</span>
+                <span style="background-color: #e2ffe8">{{ baseURL }}</span>
                 <a-input v-model="createApiForm.apiPath" size="mini" placeholder="请输入接口请求路径..." />
             </a-form-item>
             <a-form-item
@@ -176,7 +176,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
+import { ref, inject, computed, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useLoading from '@/hooks/loading'
 import { Modal } from '@arco-design/web-vue'
@@ -195,6 +195,7 @@ import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
 import ApiDesign from './components/api-design.vue'
 
+const baseURL = inject('baseURL')
 const keyWord = ref('') // 搜索关键字
 // 使用自定义的加载状态 Hook
 const { loading, setLoading } = useLoading(true)
