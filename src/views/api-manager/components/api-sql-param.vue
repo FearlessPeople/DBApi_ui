@@ -165,7 +165,11 @@ const fetchTableList = async () => {
 
 // 处理数据源切换
 const handleDataSourceChange = async () => {
-    fetchTableList()
+    if (dataSourceId.value <= 0) {
+        Message.error('请选择有效的数据源')
+        return
+    }
+    await fetchTableList()
 }
 
 // 初始化所有数据源列表
@@ -181,6 +185,10 @@ const fetchAllDBList = async () => {
 const reset = () => {
     code.value = `SELECT * FROM table_name`
     dataSourceId.value = 1
+    if (dataSourceId.value <= 0) {
+        Message.error('请选择有效的数据源')
+        return
+    }
     fetchAllDBList()
 }
 
