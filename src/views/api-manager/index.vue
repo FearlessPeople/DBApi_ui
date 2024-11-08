@@ -67,11 +67,8 @@
             </a-layout-sider>
             <a-layout-content>
                 <div class="api-header-left" v-if="selectedApi">
-                    <h3>
-                        <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp;<a-tag>{{
-                            selectedApi.id
-                        }}</a-tag>
-                    </h3>
+                    <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
+                    ><a-tag>ID:{{ selectedApi.id }}</a-tag>
                 </div>
                 <a-tabs trigger="hover" @change="handleTabChange">
                     <template #extra>
@@ -410,6 +407,12 @@ export default {
         margin-left: 15px;
         display: flex;
         align-items: center;
+
+        span {
+            margin: 12px 0px;
+            font-size: 20px;
+            font-weight: bold;
+        }
     }
 }
 
