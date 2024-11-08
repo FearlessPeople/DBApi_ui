@@ -67,11 +67,11 @@
             </a-layout-sider>
             <a-layout-content>
                 <div class="api-header-left" v-if="selectedApi">
-                    <h2>
+                    <h3>
                         <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp;<a-tag>{{
                             selectedApi.id
                         }}</a-tag>
-                    </h2>
+                    </h3>
                 </div>
                 <a-tabs trigger="hover" @change="handleTabChange">
                     <template #extra>
