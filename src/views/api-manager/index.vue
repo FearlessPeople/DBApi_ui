@@ -66,6 +66,13 @@
                 </div>
             </a-layout-sider>
             <a-layout-content>
+                <div class="api-header-left" v-if="selectedApi">
+                    <h2>
+                        <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp;<a-tag>{{
+                            selectedApi.id
+                        }}</a-tag>
+                    </h2>
+                </div>
                 <a-tabs trigger="hover" @change="handleTabChange">
                     <template #extra>
                         <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
@@ -398,6 +405,12 @@ export default {
 
 .layout-demo {
     height: calc(100vh - 95px); // 设置高度为减去导航栏后的视口高度
+
+    .api-header-left {
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+    }
 }
 
 .layout-demo :deep(.arco-layout) {

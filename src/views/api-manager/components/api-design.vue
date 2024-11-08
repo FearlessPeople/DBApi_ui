@@ -1,11 +1,6 @@
 <template>
     <div class="api-design" v-if="api">
         <div class="api-header">
-            <div class="api-header-left">
-                <h2>
-                    <icon-code style="color: rgb(var(--green-6))" />{{ api.apiName }}&nbsp;&nbsp;<a-tag>{{ api.id }}</a-tag>
-                </h2>
-            </div>
             <div class="api-header-right">
                 <p class="header-help">
                     <icon-info-circle />本项目只支持SELECT语句，请尽量编写标准SQL，如果不了解SQL语法，可参考

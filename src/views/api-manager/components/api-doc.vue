@@ -1,8 +1,5 @@
 <template>
     <div class="api-doc" v-if="api">
-        <h2>
-            <icon-code style="color: rgb(var(--green-6))" />{{ api.apiName }}&nbsp;&nbsp;<a-tag>{{ api.id }}</a-tag>
-        </h2>
         <p>接口ID: {{ api.id }}</p>
         <p>接口路径: {{ api.apiPath }}</p>
         <p>
