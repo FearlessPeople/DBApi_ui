@@ -36,6 +36,7 @@
         v-model:visible="createParamModalVisible"
         title="新增SQL参数"
         @cancel="createHandleCancel"
+        @ok="createHandleOk"
         @before-ok="craeteHandleBeforeOk"
         draggable
     >
@@ -85,15 +86,26 @@
                 :validate-trigger="['blur']"
             >
                 <a-select v-model="createParamForm.paramType" placeholder="请选择参数类型" allow-clear>
-                    <a-option>字符串</a-option>
-                    <a-option>数字</a-option>
-                    <a-option>布尔</a-option>
-                    <a-option>日期</a-option>
-                    <a-option>SQL表达式</a-option>
+                    <a-option value="1">字符串</a-option>
+                    <a-option value="2">数字</a-option>
+                    <a-option value="3">日期</a-option>
+                    <a-option value="4">SQL表达式</a-option>
                 </a-select>
             </a-form-item>
-            <a-form-item field="paramDefault" label="默认值">
-                <a-textarea v-model="createParamForm.paramDefault" />
+            <a-form-item v-if="createParamForm.paramType === '1'" field="paramValue" label="测试值">
+                <a-input v-model="createParamForm.paramValue" placeholder="请输入字符串" />
+            </a-form-item>
+
+            <a-form-item v-if="createParamForm.paramType === '2'" field="paramValue" label="测试值">
+                <a-input-number v-model="createParamForm.paramValue" placeholder="请输入数字" />
+            </a-form-item>
+
+            <a-form-item v-if="createParamForm.paramType === '3'" field="paramValue" label="测试值">
+                <a-date-picker v-model="createParamForm.paramValue" placeholder="选择日期" />
+            </a-form-item>
+
+            <a-form-item v-if="createParamForm.paramType === '4'" field="paramValue" label="SQL表达式">
+                <a-textarea v-model="createParamForm.paramValue" placeholder="请输入SQL表达式" allow-clear />
             </a-form-item>
         </a-form>
     </a-modal>
@@ -219,27 +231,65 @@ const executeSql = async () => {
 // 新增参数弹窗状态变量
 const createParamModalVisible = ref(false)
 
+interface CreateParamForm {
+    paramName: string
+    required: '0' | '1'
+    paramType: string // 使用枚举值
+    paramValue: any
+}
+
 // 新增参数弹窗表单数据
-const createParamForm = reactive({
+const createParamForm = reactive<CreateParamForm>({
     paramName: '',
     required: '0',
-    paramType: '字符串',
-    paramDefault: ''
+    paramType: '1',
+    paramValue: undefined
 })
 
 // 新增参数弹窗表单校验方法
 const createParamFormRef = ref<any>()
 
+const resetCreateParamForm = () => {
+    createParamForm.paramName = ''
+    createParamForm.required = '0'
+    createParamForm.paramType = '1'
+    createParamForm.paramValue = undefined
+}
 const createHandleCancel = () => {
     createParamModalVisible.value = false
+    resetCreateParamForm()
 }
 
-const craeteHandleBeforeOk = async () => {
-    const isValid = await createParamFormRef.value.validate()
+const craeteHandleBeforeOk = () => {
+    const isValid = createParamFormRef.value.validate()
     if (!isValid) {
         return false
     }
+    // 根据 paramType 转换 paramValue 的类型
+    switch (createParamForm.paramType) {
+        case '1': // 字符串
+            createParamForm.paramValue = String(createParamForm.paramValue)
+            break
+        case '2': // 数字
+            createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
+            break
+        case '3': // 日期
+            createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
+            break
+        case '4': // SQL表达式
+            createParamForm.paramValue = String(createParamForm.paramValue)
+            break
+        default:
+            createParamForm.paramValue = ''
+            break
+    }
+
     return true
+}
+
+const createHandleOk = () => {
+    console.log(createParamForm)
+    resetCreateParamForm()
 }
 
 // 使用 defineExpose 公开 init 方法
@@ -259,17 +309,6 @@ watch(
         }
     }
 )
-
-// 新增状态变量和方法
-const showButtonsIndex = ref(-1)
-
-const showButtons = (index: number) => {
-    showButtonsIndex.value = index
-}
-
-const hideButtons = () => {
-    showButtonsIndex.value = -1
-}
 
 // 示例数据
 const items = [
