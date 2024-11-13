@@ -307,6 +307,7 @@ const createHandleOk = async (done: (closed: boolean) => void) => {
             }
         }
         resetCreateParamForm() // 重置表单
+        done(true)
     } else {
         Message.error('表单验证失败')
         done(false)
