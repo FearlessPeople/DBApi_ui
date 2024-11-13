@@ -2,7 +2,7 @@
     <a-card title="SQL参数" style="height: 100%; padding: 0px">
         <template #extra>
             <a-tooltip content="点击新建SQL参数">
-                <a-link @click="createParamModalVisible = true"><icon-plus /></a-link>
+                <a-link @click="createParam()"><icon-plus /></a-link>
             </a-tooltip>
         </template>
 
@@ -104,10 +104,9 @@
     <!-- 新增参数弹窗 -->
     <a-modal
         v-model:visible="createParamModalVisible"
-        title="新增SQL参数"
+        :title="modalType == 1 ? '新增参数' : '编辑参数'"
         @cancel="createHandleCancel"
-        @ok="createHandleOk"
-        @before-ok="craeteHandleBeforeOk"
+        @before-ok="createHandleOk"
         draggable
     >
         <a-form :model="createParamForm" ref="createParamFormRef">
@@ -232,6 +231,7 @@ const createParamForm = reactive<CreateParamForm>({
 
 // 新增参数弹窗表单校验方法
 const createParamFormRef = ref<any>()
+const modalType = ref(1) // 1 新建，2 编辑
 
 const resetCreateParamForm = () => {
     createParamForm.apiId = props.api?.id || 0
@@ -245,56 +245,72 @@ const createHandleCancel = () => {
     resetCreateParamForm()
 }
 
-const craeteHandleBeforeOk = () => {
-    const isValid = createParamFormRef.value.validate()
-    if (!isValid) {
-        return false
-    }
-    // 根据 paramType 转换 paramValue 的类型
-    switch (createParamForm.paramType) {
-        case '1': // 字符串
-            createParamForm.paramValue = String(createParamForm.paramValue)
-            break
-        case '2': // 数字
-            createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
-            break
-        case '3': // 日期
-            createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
-            break
-        case '4': // SQL表达式
-            createParamForm.paramValue = String(createParamForm.paramValue)
-            break
-        default:
-            createParamForm.paramValue = ''
-            break
-    }
-
-    return true
+// 新增参数
+const createParam = () => {
+    createParamModalVisible.value = true
+    modalType.value = 1
 }
-
+// 编辑参数
 const editParam = (item: ApiSqlParam) => {
     createParamForm.apiId = item.apiId
     createParamForm.paramName = item.paramName
     createParamForm.required = item.isRequired ? '1' : '0'
     createParamForm.paramType = item.paramType.toString()
-    createParamForm.paramValue = item.paramValue
+
+    if (item.paramType.toString() === '2') {
+        createParamForm.paramValue = Number(item.paramValue)
+    } else {
+        createParamForm.paramValue = item.paramValue
+    }
+    modalType.value = 2
     createParamModalVisible.value = true
 }
+// 删除参数
 const deleteParam = (item: ApiSqlParam) => {
     console.log(item)
 }
-const createHandleOk = () => {
-    // 使用对象展开运算符创建新的对象并插入paramList数组
-    if (props.api && props.api.id) {
-        if (createParamForm.paramName !== '') {
-            createParamForm.apiId = props.api.id
-            // 将 paramType 转换为 number 类型
-            const newParam = { ...createParamForm, paramType: Number(createParamForm.paramType) }
-            paramList.value.push(newParam)
-        }
-    }
 
-    resetCreateParamForm() // 重置表单
+const createHandleOk = async (done: (closed: boolean) => void) => {
+    const isValid = await createParamFormRef.value.validate()
+    if (isValid === undefined) {
+        // 根据 paramType 转换 paramValue 的类型
+        switch (createParamForm.paramType) {
+            case '1': // 字符串
+                createParamForm.paramValue = String(createParamForm.paramValue)
+                break
+            case '2': // 数字
+                createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
+                break
+            case '3': // 日期
+                createParamForm.paramValue = createParamForm.paramValue ? String(createParamForm.paramValue) : undefined
+                break
+            case '4': // SQL表达式
+                createParamForm.paramValue = String(createParamForm.paramValue)
+                break
+            default:
+                createParamForm.paramValue = ''
+                break
+        }
+
+        // 使用对象展开运算符创建新的对象并插入paramList数组
+        if (props.api && props.api.id) {
+            if (createParamForm.paramName !== '') {
+                if (modalType.value === 1) {
+                    // 新增参数
+                    createParamForm.apiId = props.api.id
+                    const newParam = { ...createParamForm, paramType: Number(createParamForm.paramType) }
+                    paramList.value.push(newParam)
+                } else {
+                    // 编辑参数
+                    Message.info(createParamForm.apiId + createParamForm.paramName + createParamForm.paramValue)
+                }
+            }
+        }
+        resetCreateParamForm() // 重置表单
+    } else {
+        Message.error('表单验证失败')
+        done(false)
+    }
 }
 
 // 使用 defineExpose 公开 init 方法
