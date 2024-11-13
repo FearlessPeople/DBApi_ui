@@ -71,6 +71,22 @@
     <div v-else>
         <h4>请选择一个 API 以查看详情</h4>
     </div>
+    <div class="query-result-modal">
+        <a-modal width="80%" :draggable="true" :footer="false" v-model:visible="resultVisible">
+            <QueryResultTable
+                v-if="queryResult"
+                :columns="queryResult.columns"
+                :data="queryResult.data"
+                :totalCount="queryResult.count"
+                :executionTime="queryResult.executionTime"
+            />
+            <template #title>
+                <div>
+                    <p v-if="queryResult">查询成功,总条数: {{ queryResult.count }} 耗时: {{ queryResult.executionTime }} ms</p>
+                </div>
+            </template>
+        </a-modal>
+    </div>
 </template>
 <script setup lang="ts">
 import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onActivated, onMounted } from 'vue'
@@ -80,9 +96,10 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { Message } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
-import { ApiList, getApiSql, save, execute } from '@/api/apis'
+import { ApiList, getApiSql, save, execute, QueryResult } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 import ApiSqlParam from './api-sql-param.vue'
+import QueryResultTable from './query-result-table.vue'
 
 // 接收父组件传递的 API 对象
 const props = defineProps<{
@@ -172,7 +189,8 @@ const init = async () => {
         }
     }
 }
-
+const resultVisible = ref(false)
+const queryResult = ref<QueryResult>()
 const executeSql = async () => {
     // 获取当前codemirror编辑器的文本内容
     const sqlText = view.value.state.doc.toString()
@@ -184,6 +202,9 @@ const executeSql = async () => {
     const response = await execute(param)
     if (response.status) {
         Message.success(response.message)
+        const data: QueryResult = response.data as QueryResult
+        queryResult.value = data
+        resultVisible.value = true
     } else {
         Message.error(response.message)
     }
@@ -276,5 +297,8 @@ watch(
             width: 15%;
         }
     }
+}
+:deep(.arco-modal-body) {
+    padding: 0px;
 }
 </style>

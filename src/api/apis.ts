@@ -48,6 +48,12 @@ export interface ApiGroup {
     createTime?: Date // 创建时间
     updateTime?: Date // 更新时间
 }
+export interface QueryResult {
+    columns: string[] // 列名数组
+    data: Record<string, any>[] // 查询结果的每一行，键为列名，值为列的值
+    count: number // 查询结果的总记录数
+    executionTime: number // SQL 执行时间，单位为毫秒
+}
 
 // 接口列表
 export function queryApiList(keyWord: string) {
@@ -85,7 +91,7 @@ export function save(aipsql: ApiSql) {
 
 // 执行SQL
 export function execute(aipsql: ApiSql) {
-    return axios.post<any, ApiResponse<ApiSql>>('/api/sql/execute', qs.stringify(aipsql))
+    return axios.post<any, ApiResponse<QueryResult>>('/api/sql/execute', qs.stringify(aipsql))
 }
 // 根据api_id获取接口详情
 export function getApiSql(apiId: number) {
