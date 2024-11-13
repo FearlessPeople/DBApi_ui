@@ -82,7 +82,7 @@
             />
             <template #title>
                 <div>
-                    <p v-if="queryResult">查询成功,总条数: {{ queryResult.count }} 耗时: {{ queryResult.executionTime }} ms</p>
+                    <p v-if="queryResult">查询成功,总条数: {{ queryResult.count }} 耗时: {{ queryResult.executionTime }}</p>
                 </div>
             </template>
         </a-modal>
