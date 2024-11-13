@@ -54,7 +54,7 @@
                     <Codemirror
                         v-model="code"
                         placeholder="请在这里输入SQL语句..."
-                        :style="{ height: 'calc(100vh - 240px)' }"
+                        :style="{ height: 'calc(100vh - 100px)' }"
                         :autofocus="true"
                         :indent-with-tab="true"
                         :tab-size="2"
@@ -224,7 +224,7 @@ watch(
 
     .api-design-center {
         display: flex;
-        height: calc(100vh - 205px);
+        height: calc(100vh - 260px);
 
         .api-design-left,
         .api-design-center-content,

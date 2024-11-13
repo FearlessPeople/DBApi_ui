@@ -29,6 +29,17 @@ export interface ApiSql {
     updateTime?: Date // 更新时间
 }
 
+export interface ApiSqlParam {
+    id?: number // 自增ID
+    apiId: number // 接口ID
+    paramName: string // 参数名称
+    paramType: number // 接口类型 1: 字符串, 2: 数值, 3: 日期, 4: SQL表达式
+    paramValue: string // 接口SQL描述
+    isRequired?: number // 是否必填
+    createTime?: Date // 创建时间
+    updateTime?: Date // 更新时间
+}
+
 // ApiGroup 接口
 export interface ApiGroup {
     id: number // 自增ID
@@ -70,4 +81,24 @@ export function updateApiGroup(group: ApiGroup) {
 // 删除分组
 export function deleteApiGroup(group: ApiGroup) {
     return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
+}
+
+// 根据ApiId获取参数列表
+export function getApiSqlParamList(apiId: number) {
+    return axios.get<number, ApiResponse<ApiSqlParam[]>>(`/api/sql/getSqlParam?apiId=${apiId}`)
+}
+
+// 新增SQL参数
+export function addApiSqlParam(params: ApiSqlParam) {
+    return axios.post<any, ApiResponse<string>>('/api/sql/sqlParam/add', params)
+}
+
+// 编辑SQL参数
+export function editApiSqlParam(params: ApiSqlParam) {
+    return axios.post<any, ApiResponse<string>>('/api/sql/sqlParam/edit', params)
+}
+
+// 删除SQL参数
+export function deleteApiSqlParam(params: ApiSqlParam) {
+    return axios.get<any, ApiResponse<string>>(`/api/sql/sqlParam/delete?id=${params.id}`)
 }
