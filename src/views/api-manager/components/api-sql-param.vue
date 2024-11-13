@@ -1,6 +1,9 @@
 <template>
     <a-card title="SQL参数" style="height: 100%; padding: 0px">
         <template #extra>
+            <a-tooltip content="点击刷新SQL参数">
+                <a-link @click="init()"><icon-refresh /></a-link>
+            </a-tooltip>
             <a-tooltip content="点击新建SQL参数">
                 <a-link @click="createParam()"><icon-plus /></a-link>
             </a-tooltip>
@@ -127,18 +130,8 @@
             >
                 <a-input v-model="createParamForm.paramName" placeholder="请输入参数名称..." />
             </a-form-item>
-            <a-form-item
-                field="required"
-                label="必填"
-                :rules="[
-                    {
-                        required: true,
-                        message: '必须选一个类型'
-                    }
-                ]"
-                :validate-trigger="['blur']"
-            >
-                <a-radio-group v-model="createParamForm.required">
+            <a-form-item field="isRequired" label="必填">
+                <a-radio-group v-model="createParamForm.isRequired">
                     <a-radio value="0">是</a-radio>
                     <a-radio value="1">否</a-radio>
                 </a-radio-group>
@@ -185,7 +178,15 @@ import { ref, h, watch, reactive, shallowRef, getCurrentInstance, nextTick, onAc
 import { useRouter, useRoute } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
-import { ApiList, getApiSql, ApiSqlParam, getApiSqlParamList } from '@/api/apis'
+import {
+    ApiList,
+    getApiSql,
+    ApiSqlParam,
+    addApiSqlParam,
+    editApiSqlParam,
+    deleteApiSqlParam,
+    getApiSqlParamList
+} from '@/api/apis'
 
 // 接收父组件传递的 API 对象
 const props = defineProps<{
@@ -213,18 +214,20 @@ const init = async () => {
 const createParamModalVisible = ref(false)
 
 interface CreateParamForm {
+    id: number
     apiId: number
     paramName: string
-    required: '0' | '1'
+    isRequired: '0' | '1'
     paramType: string // 使用枚举值
     paramValue: any
 }
 
 // 新增参数弹窗表单数据
 const createParamForm = reactive<CreateParamForm>({
+    id: 0,
     apiId: props.api?.id || 0,
     paramName: '',
-    required: '0',
+    isRequired: '0',
     paramType: '1',
     paramValue: undefined
 })
@@ -234,9 +237,10 @@ const createParamFormRef = ref<any>()
 const modalType = ref(1) // 1 新建，2 编辑
 
 const resetCreateParamForm = () => {
+    createParamForm.id = 0
     createParamForm.apiId = props.api?.id || 0
     createParamForm.paramName = ''
-    createParamForm.required = '0'
+    createParamForm.isRequired = '0'
     createParamForm.paramType = '1'
     createParamForm.paramValue = undefined
 }
@@ -252,9 +256,10 @@ const createParam = () => {
 }
 // 编辑参数
 const editParam = (item: ApiSqlParam) => {
+    createParamForm.id = item.id ?? 0
     createParamForm.apiId = item.apiId
     createParamForm.paramName = item.paramName
-    createParamForm.required = item.isRequired ? '1' : '0'
+    createParamForm.isRequired = item.isRequired ? '1' : '0'
     createParamForm.paramType = item.paramType.toString()
 
     if (item.paramType.toString() === '2') {
@@ -266,8 +271,20 @@ const editParam = (item: ApiSqlParam) => {
     createParamModalVisible.value = true
 }
 // 删除参数
-const deleteParam = (item: ApiSqlParam) => {
-    console.log(item)
+// 删除参数
+const deleteParam = async (item: ApiSqlParam) => {
+    if (item.id === undefined) {
+        Message.error('参数ID无效')
+        return
+    }
+    const response = await deleteApiSqlParam(item.id)
+    if (!response.status) {
+        Message.error('参数删除失败')
+        return
+    }
+    // 更新参数列表
+    paramList.value = paramList.value.filter(param => param.id !== item.id)
+    Message.success(response.message)
 }
 
 const createHandleOk = async (done: (closed: boolean) => void) => {
@@ -295,14 +312,32 @@ const createHandleOk = async (done: (closed: boolean) => void) => {
         // 使用对象展开运算符创建新的对象并插入paramList数组
         if (props.api && props.api.id) {
             if (createParamForm.paramName !== '') {
+                // 对参数类型进行转换
+                const newParam = {
+                    ...createParamForm,
+                    isRequired: Number(createParamForm.isRequired),
+                    paramType: Number(createParamForm.paramType)
+                }
                 if (modalType.value === 1) {
                     // 新增参数
                     createParamForm.apiId = props.api.id
-                    const newParam = { ...createParamForm, paramType: Number(createParamForm.paramType) }
+                    const response = await addApiSqlParam(newParam)
+                    if (!response.status) {
+                        Message.error('参数添加失败')
+                        return
+                    }
+                    Message.success('参数添加成功')
+                    init()
                     paramList.value.push(newParam)
                 } else {
                     // 编辑参数
-                    Message.info(createParamForm.apiId + createParamForm.paramName + createParamForm.paramValue)
+                    const response = await editApiSqlParam(newParam)
+                    if (!response.status) {
+                        Message.error('参数编辑失败')
+                        return
+                    }
+                    Message.success('参数编辑成功')
+                    init()
                 }
             }
         }

@@ -90,15 +90,15 @@ export function getApiSqlParamList(apiId: number) {
 
 // 新增SQL参数
 export function addApiSqlParam(params: ApiSqlParam) {
-    return axios.post<any, ApiResponse<string>>('/api/sql/sqlParam/add', params)
+    return axios.post<any, ApiResponse<string>>('/api/sql/addSqlParam', qs.stringify(params))
 }
 
 // 编辑SQL参数
 export function editApiSqlParam(params: ApiSqlParam) {
-    return axios.post<any, ApiResponse<string>>('/api/sql/sqlParam/edit', params)
+    return axios.post<any, ApiResponse<string>>('/api/sql/editSqlParam', qs.stringify(params))
 }
 
 // 删除SQL参数
-export function deleteApiSqlParam(params: ApiSqlParam) {
-    return axios.get<any, ApiResponse<string>>(`/api/sql/sqlParam/delete?id=${params.id}`)
+export function deleteApiSqlParam(id: number) {
+    return axios.get<any, ApiResponse<string>>(`/api/sql/deleteSqlParam?id=${id}`)
 }
