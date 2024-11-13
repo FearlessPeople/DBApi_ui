@@ -36,7 +36,7 @@
                                 </template>
                                 运行
                             </a-link>
-                            <a-link href="link">
+                            <a-link @click="saveSql()">
                                 <template #icon>
                                     <icon-save style="color: rgb(var(--arcoblue-6))" />
                                 </template>
@@ -80,7 +80,7 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { Message } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
-import { ApiList, getApiSql, execute } from '@/api/apis'
+import { ApiList, getApiSql, save, execute } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 import ApiSqlParam from './api-sql-param.vue'
 
@@ -181,7 +181,23 @@ const executeSql = async () => {
         apiId: props.api!.id,
         apiSql: sqlText
     }
-    const res = await execute(param)
+    const response = await execute(param)
+    if (response.status) {
+        Message.success(response.message)
+    } else {
+        Message.error(response.message)
+    }
+}
+
+const saveSql = async () => {
+    // 获取当前codemirror编辑器的文本内容
+    const sqlText = view.value.state.doc.toString()
+    // 执行SQL语句
+    const param = {
+        apiId: props.api!.id,
+        apiSql: sqlText
+    }
+    const res = await save(param)
     Message.success(sqlText)
 }
 

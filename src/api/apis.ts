@@ -78,9 +78,14 @@ export function updateApiGroup(group: ApiGroup) {
 export function deleteApiGroup(group: ApiGroup) {
     return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
 }
+// 保存SQL
+export function save(aipsql: ApiSql) {
+    return axios.post<ApiSql>('/api/sql/save', qs.stringify(aipsql))
+}
+
 // 执行SQL
 export function execute(aipsql: ApiSql) {
-    return axios.post<ApiSql>('/api/sql/execute', qs.stringify(aipsql))
+    return axios.post<any, ApiResponse<ApiSql>>('/api/sql/execute', qs.stringify(aipsql))
 }
 // 根据api_id获取接口详情
 export function getApiSql(apiId: number) {
