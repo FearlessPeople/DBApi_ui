@@ -218,8 +218,12 @@ const saveSql = async () => {
         apiId: props.api!.id,
         apiSql: sqlText
     }
-    const res = await save(param)
-    Message.success(sqlText)
+    const response = await save(param)
+    if (response.status) {
+        Message.success(response.message)
+    } else {
+        Message.error(response.message)
+    }
 }
 
 // 使用 defineExpose 公开 init 方法

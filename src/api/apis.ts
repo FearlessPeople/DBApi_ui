@@ -86,7 +86,7 @@ export function deleteApiGroup(group: ApiGroup) {
 }
 // 保存SQL
 export function save(aipsql: ApiSql) {
-    return axios.post<ApiSql>('/api/sql/save', qs.stringify(aipsql))
+    return axios.post<any, ApiResponse<string>>('/api/sql/save', qs.stringify(aipsql))
 }
 
 // 执行SQL
