@@ -19,12 +19,12 @@ export interface ApiList {
 
 // ApiSQL 接口
 export interface ApiSql {
-    id: number // 自增ID
+    id?: number // 自增ID
     apiId: number // 接口ID
     apiSql: string // 接口SQL
-    apiParams: string // 接口参数
-    apiSqlDesc: string // 接口SQL描述
-    datasourceId: number // 数据源ID
+    apiParams?: string // 接口参数
+    apiSqlDesc?: string // 接口SQL描述
+    datasourceId?: number // 数据源ID
     createTime?: Date // 创建时间
     updateTime?: Date // 更新时间
 }
@@ -58,10 +58,6 @@ export function queryApiList(keyWord: string) {
 export function addApiList(apiList: ApiList) {
     return axios.post<PageDataResponse<ApiList>>('/api/apiList/add', apiList)
 }
-// 根据api_id获取接口详情
-export function getApiSql(apiId: number) {
-    return axios.get<ApiSql>(`/api/sql/getSql?apiId=${apiId}`)
-}
 
 // 获取所有分组列表
 export function queryApiGroupList() {
@@ -82,7 +78,14 @@ export function updateApiGroup(group: ApiGroup) {
 export function deleteApiGroup(group: ApiGroup) {
     return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
 }
-
+// 执行SQL
+export function execute(aipsql: ApiSql) {
+    return axios.post<ApiSql>('/api/sql/execute', qs.stringify(aipsql))
+}
+// 根据api_id获取接口详情
+export function getApiSql(apiId: number) {
+    return axios.get<ApiSql>(`/api/sql/getSql?apiId=${apiId}`)
+}
 // 根据ApiId获取参数列表
 export function getApiSqlParamList(apiId: number) {
     return axios.get<number, ApiResponse<ApiSqlParam[]>>(`/api/sql/getSqlParam?apiId=${apiId}`)

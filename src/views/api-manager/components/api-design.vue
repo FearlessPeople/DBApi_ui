@@ -80,7 +80,7 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { Message } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
-import { ApiList, getApiSql } from '@/api/apis'
+import { ApiList, getApiSql, execute } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 import ApiSqlParam from './api-sql-param.vue'
 
@@ -167,8 +167,7 @@ const init = async () => {
         const { data } = await getApiSql(props.api.id)
         if (data) {
             code.value = data.apiSql
-            dataSourceId.value = data.datasourceId
-            // 获取所有数据库列表
+            dataSourceId.value = data.datasourceId ?? 1 // 使用空值合并运算符提供默认值
             fetchAllDBList()
         }
     }
@@ -178,7 +177,11 @@ const executeSql = async () => {
     // 获取当前codemirror编辑器的文本内容
     const sqlText = view.value.state.doc.toString()
     // 执行SQL语句
-    // const res = await getApiSql(props.api!.id, { apiSql: sqlText, datasourceId: dataSourceId.value })
+    const param = {
+        apiId: props.api!.id,
+        apiSql: sqlText
+    }
+    const res = await execute(param)
     Message.success(sqlText)
 }
 
