@@ -70,7 +70,7 @@
                     <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
                     ><a-tag>ID:{{ selectedApi.id }}</a-tag>
                 </div>
-                <a-tabs trigger="hover" @change="handleTabChange">
+                <a-tabs @change="handleTabChange">
                     <template #extra>
                         <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
                         <a-button size="mini" type="outline" status="success">帮助文档</a-button>
@@ -81,7 +81,9 @@
                     <a-tab-pane key="2" title="接口设计">
                         <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
                     </a-tab-pane>
-                    <a-tab-pane key="3" title="接口调用"> Content of Tab Panel 3 </a-tab-pane>
+                    <a-tab-pane key="3" title="接口调用">
+                        <ApiRequest ref="apiRequest" :api="selectedApi"></ApiRequest>
+                    </a-tab-pane>
                     <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
                 </a-tabs>
             </a-layout-content>
@@ -198,6 +200,7 @@ import {
 import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
 import ApiDesign from './components/api-design.vue'
+import ApiRequest from './components/api-request.vue'
 
 const baseURL = inject('baseURL')
 const keyWord = ref('') // 搜索关键字
