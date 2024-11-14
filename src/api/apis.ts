@@ -22,8 +22,6 @@ export interface ApiSql {
     id?: number // 自增ID
     apiId: number // 接口ID
     apiSql: string // 接口SQL
-    apiParams?: string // 接口参数
-    apiSqlDesc?: string // 接口SQL描述
     datasourceId?: number // 数据源ID
     createTime?: Date // 创建时间
     updateTime?: Date // 更新时间

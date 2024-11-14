@@ -187,6 +187,7 @@ const init = async () => {
 const resultVisible = ref(false)
 const queryResult = ref<QueryResult>()
 const executeSql = async () => {
+    queryResult.value = undefined
     // 获取当前codemirror编辑器的文本内容
     const sqlText = view.value.state.doc.toString()
     // 执行SQL语句
