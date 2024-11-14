@@ -42,13 +42,6 @@
                                 </template>
                                 保存
                             </a-link>
-                            <a-link href="link">
-                                <template #icon>
-                                    <icon-eye />
-                                </template>
-                                查看执行结果</a-link
-                            >
-                            <span>成功 查询耗时2.3秒</span>
                         </div>
                     </template>
                     <Codemirror
@@ -94,6 +87,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { Codemirror } from 'vue-codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { Message } from '@arco-design/web-vue'
+import { Modal } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
 import { ApiList, getApiSql, save, execute, QueryResult } from '@/api/apis'
@@ -206,7 +200,10 @@ const executeSql = async () => {
         queryResult.value = data
         resultVisible.value = true
     } else {
-        Message.error(response.message)
+        Modal.error({
+            title: 'SQL执行失败',
+            content: response.message
+        })
     }
 }
 

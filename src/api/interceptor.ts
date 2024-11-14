@@ -53,25 +53,18 @@ axios.interceptors.response.use(
 
         // 否则按照正常 JSON 响应处理
         const res = response.data
-
         // 处理非 200 响应
         if (res.code !== 200) {
-            Message.error({
-                content: res.message || 'Error',
-                duration: 5 * 1000
-            })
-
-            // 检查特定错误码，处理登录失效等场景
-            if ([50008, 50012, 50014].includes(res.code) && response.config.url !== '/api/user/info') {
+            if ([500].includes(res.code)) {
                 Modal.error({
-                    title: 'Confirm logout',
-                    content: 'You have been logged out, you can cancel to stay on this page, or log in again',
-                    okText: 'Re-Login',
-                    async onOk() {
-                        const userStore = useUserStore()
-                        await userStore.logout()
-                        window.location.reload()
-                    }
+                    title: '服务器错误',
+                    draggable: true,
+                    content: res.message
+                })
+            } else {
+                Message.error({
+                    content: res.message || 'Error',
+                    duration: 5 * 1000
                 })
             }
             return Promise.reject(new Error(res.message || 'Error'))
