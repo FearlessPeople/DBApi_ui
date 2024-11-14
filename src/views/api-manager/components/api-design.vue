@@ -155,7 +155,9 @@ const handleDataSourceChange = async () => {
 
 // 初始化所有数据源列表
 const allDataSourcesList = ref<DataSourceRecord[]>([])
-
+const resultVisible = ref(false)
+const queryResult = ref<QueryResult>()
+const apisql = ref<ApiSql>()
 // 获取所有数据库列表
 const fetchAllDBList = async () => {
     const { data } = await allDbList()
@@ -166,9 +168,10 @@ const fetchAllDBList = async () => {
 const reset = () => {
     code.value = `SELECT * FROM table_name`
     dataSourceId.value = 1
+    apisql.value = undefined
+    queryResult.value = undefined
     fetchAllDBList()
 }
-const apisql = ref<ApiSql>()
 // 初始化加载数据
 const init = async () => {
     reset()
@@ -184,8 +187,6 @@ const init = async () => {
         }
     }
 }
-const resultVisible = ref(false)
-const queryResult = ref<QueryResult>()
 const executeSql = async () => {
     queryResult.value = undefined
     // 获取当前codemirror编辑器的文本内容
