@@ -90,7 +90,7 @@ import { Message } from '@arco-design/web-vue'
 import { Modal } from '@arco-design/web-vue'
 import { IconStar, IconStorage } from '@arco-design/web-vue/es/icon'
 import { allDbList, allTables, DataSourceRecord } from '@/api/sys-datasource'
-import { ApiList, getApiSql, save, execute, QueryResult } from '@/api/apis'
+import { ApiList, ApiSql, getApiSql, save, execute, QueryResult } from '@/api/apis'
 import { sql } from '@codemirror/lang-sql'
 import ApiSqlParam from './api-sql-param.vue'
 import QueryResultTable from './query-result-table.vue'
@@ -168,7 +168,7 @@ const reset = () => {
     dataSourceId.value = 1
     fetchAllDBList()
 }
-
+const apisql = ref<ApiSql>()
 // 初始化加载数据
 const init = async () => {
     reset()
@@ -179,6 +179,7 @@ const init = async () => {
         if (data) {
             code.value = data.apiSql
             dataSourceId.value = data.datasourceId ?? 1 // 使用空值合并运算符提供默认值
+            apisql.value = data
             fetchAllDBList()
         }
     }
@@ -191,7 +192,8 @@ const executeSql = async () => {
     // 执行SQL语句
     const param = {
         apiId: props.api!.id,
-        apiSql: sqlText
+        apiSql: sqlText,
+        datasourceId: dataSourceId.value
     }
     const response = await execute(param)
     if (response.status) {
@@ -212,6 +214,7 @@ const saveSql = async () => {
     const sqlText = view.value.state.doc.toString()
     // 执行SQL语句
     const param = {
+        id: apisql.value?.id,
         apiId: props.api!.id,
         apiSql: sqlText,
         datasourceId: dataSourceId.value

@@ -95,7 +95,7 @@ export function execute(aipsql: ApiSql) {
 }
 // 根据api_id获取接口详情
 export function getApiSql(apiId: number) {
-    return axios.get<ApiSql>(`/api/sql/getSql?apiId=${apiId}`)
+    return axios.get<any, ApiResponse<ApiSql>>(`/api/sql/getSql?apiId=${apiId}`)
 }
 // 根据ApiId获取参数列表
 export function getApiSqlParamList(apiId: number) {
