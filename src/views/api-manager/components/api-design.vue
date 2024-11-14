@@ -213,7 +213,8 @@ const saveSql = async () => {
     // 执行SQL语句
     const param = {
         apiId: props.api!.id,
-        apiSql: sqlText
+        apiSql: sqlText,
+        datasourceId: dataSourceId.value
     }
     const response = await save(param)
     if (response.status) {
