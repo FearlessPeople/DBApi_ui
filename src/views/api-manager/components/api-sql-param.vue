@@ -307,6 +307,14 @@ const createHandleOk = async (done: (closed: boolean) => void) => {
                 break
         }
 
+        // 处理 undefined 和 null
+        createParamForm.paramValue =
+            createParamForm.paramValue === undefined ||
+            createParamForm.paramValue === null ||
+            (typeof createParamForm.paramValue === 'string' && createParamForm.paramValue === 'undefined')
+                ? ''
+                : createParamForm.paramValue
+
         if (props.api && props.api.id) {
             createParamForm.apiId = props.api.id
             const newParam = {
@@ -323,7 +331,6 @@ const createHandleOk = async (done: (closed: boolean) => void) => {
                     }
                     Message.success('参数添加成功')
                     init()
-                    paramList.value.push(newParam)
                 } else {
                     // 编辑参数
                     const response = await editApiSqlParam(newParam)
