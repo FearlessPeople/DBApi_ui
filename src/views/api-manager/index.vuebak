@@ -66,28 +66,26 @@
                 </div>
             </pane>
             <pane size="85">
-                <div class="api-center">
-                    <div class="api-header-left" v-if="selectedApi">
-                        <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
-                        ><a-tag>ID:{{ selectedApi.id }}</a-tag>
-                    </div>
-                    <a-tabs @change="handleTabChange">
-                        <template #extra>
-                            <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
-                            <a-button size="mini" type="outline" status="success">帮助文档</a-button>
-                        </template>
-                        <a-tab-pane key="1" title="接口文档">
-                            <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
-                        </a-tab-pane>
-                        <a-tab-pane key="2" title="接口设计">
-                            <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
-                        </a-tab-pane>
-                        <a-tab-pane key="3" title="接口调用">
-                            <ApiRequest ref="apiRequest" :api="selectedApi"></ApiRequest>
-                        </a-tab-pane>
-                        <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
-                    </a-tabs>
+                <div class="api-header-left" v-if="selectedApi">
+                    <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
+                    ><a-tag>ID:{{ selectedApi.id }}</a-tag>
                 </div>
+                <a-tabs @change="handleTabChange">
+                    <template #extra>
+                        <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
+                        <a-button size="mini" type="outline" status="success">帮助文档</a-button>
+                    </template>
+                    <a-tab-pane key="1" title="接口文档">
+                        <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
+                    </a-tab-pane>
+                    <a-tab-pane key="2" title="接口设计">
+                        <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
+                    </a-tab-pane>
+                    <a-tab-pane key="3" title="接口调用">
+                        <ApiRequest ref="apiRequest" :api="selectedApi"></ApiRequest>
+                    </a-tab-pane>
+                    <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
+                </a-tabs>
             </pane>
         </splitpanes>
     </div>
@@ -415,11 +413,7 @@ export default {
 
 .layout-demo {
     height: calc(100vh - 95px); // 设置高度为减去导航栏后的视口高度
-    .api-tree {
-        margin: 10px 0px;
-    }
-    .api-center {
-    }
+
     .api-header-left {
         margin-left: 15px;
         display: flex;
@@ -435,11 +429,11 @@ export default {
 
 .splitpanes__pane {
     height: calc(100vh - 95px); // 设置高度为减去导航栏后的视口高度
+    display: flex;
+    justify-content: center;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 5em;
-    background-color: #ffffff;
 }
-
 // .layout-demo :deep(.arco-layout) {
 //     height: 100%; // 确保 layout 充满整个容器
 // }
@@ -455,11 +449,12 @@ export default {
 //     background-color: #ffffff;
 //     padding: 10px;
 // }
-:deep(.arco-collapse-item-content) {
-    padding-right: 0px;
-    padding-left: 0px;
-    background-color: #ffffff;
-}
+// :deep(.arco-collapse-item-content) {
+//     width: 100%;
+//     padding-right: 0px;
+//     padding-left: 0px;
+//     background-color: #ffffff;
+// }
 // :deep(.arco-layout-sider-light) {
 //     padding-right: 20px;
 // }
