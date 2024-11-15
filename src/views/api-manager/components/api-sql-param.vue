@@ -204,7 +204,6 @@ const sqlParamList = async () => {
 }
 // 初始化加载数据
 const init = async () => {
-    // 检查 props.api 是否为 null
     if (props.api && props.api.id) {
         sqlParamList()
     }
@@ -271,7 +270,6 @@ const editParam = (item: ApiSqlParam) => {
     createParamModalVisible.value = true
 }
 // 删除参数
-// 删除参数
 const deleteParam = async (item: ApiSqlParam) => {
     if (item.id === undefined) {
         Message.error('参数ID无效')
@@ -309,18 +307,15 @@ const createHandleOk = async (done: (closed: boolean) => void) => {
                 break
         }
 
-        // 使用对象展开运算符创建新的对象并插入paramList数组
         if (props.api && props.api.id) {
+            createParamForm.apiId = props.api.id
+            const newParam = {
+                ...createParamForm,
+                isRequired: Number(createParamForm.isRequired),
+                paramType: Number(createParamForm.paramType)
+            }
             if (createParamForm.paramName !== '') {
-                // 对参数类型进行转换
-                const newParam = {
-                    ...createParamForm,
-                    isRequired: Number(createParamForm.isRequired),
-                    paramType: Number(createParamForm.paramType)
-                }
                 if (modalType.value === 1) {
-                    // 新增参数
-                    createParamForm.apiId = props.api.id
                     const response = await addApiSqlParam(newParam)
                     if (!response.status) {
                         Message.error('参数添加失败')
@@ -374,6 +369,8 @@ watch(
     .param-list {
         display: flex;
         flex-direction: column;
+        max-height: 400px;
+        overflow-y: auto;
         .param-item {
             display: flex;
             flex-direction: row; /* 水平布局 */

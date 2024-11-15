@@ -103,7 +103,7 @@ const props = defineProps<{
 const router = useRouter() // 获取路由实例
 const route = useRoute() // 获取当前路由对象
 
-const code = ref(`SELECT * FROM table_name`)
+const code = ref()
 const extensions = [sql(), oneDark]
 
 // Codemirror EditorView instance ref
@@ -166,7 +166,7 @@ const fetchAllDBList = async () => {
 }
 
 const reset = () => {
-    code.value = `SELECT * FROM table_name`
+    code.value = ''
     dataSourceId.value = 1
     apisql.value = undefined
     queryResult.value = undefined

@@ -201,6 +201,7 @@ import { Message } from '@arco-design/web-vue'
 import ApiDoc from './components/api-doc.vue'
 import ApiDesign from './components/api-design.vue'
 import ApiRequest from './components/api-request.vue'
+import ApiSqlParam from './components/api-sql-param.vue'
 
 const baseURL = inject('baseURL')
 const keyWord = ref('') // 搜索关键字
@@ -377,12 +378,14 @@ const fetchGroupList = async () => {
 const apiDoc = ref<InstanceType<typeof ApiDoc> | null>(null)
 const apiDesign = ref<InstanceType<typeof ApiDesign> | null>(null)
 const apiRequest = ref<InstanceType<typeof ApiRequest> | null>(null)
+const apiSqlParam = ref<InstanceType<typeof ApiSqlParam> | null>(null)
 
 const handleTabChange = (key: string | number) => {
     if (key === '1' && apiDoc.value) {
         apiDoc.value.init()
-    } else if (key === '2' && apiDesign.value) {
+    } else if (key === '2' && apiDesign.value && apiSqlParam.value) {
         apiDesign.value.init()
+        apiSqlParam.value.init()
     } else if (key === '3' && apiRequest.value) {
         apiRequest.value.init()
     }

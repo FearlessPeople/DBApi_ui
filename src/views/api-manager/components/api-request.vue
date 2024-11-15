@@ -195,7 +195,7 @@ const send = async () => {
     code.value = ''
     const { data } = await callApi(props.api!.apiPath, paramList.value)
     executionTime.value = data.executionTime
-
+    executionStatu.value = 'OK'
     code.value = JSON.stringify(data, null, 2)
 }
 
@@ -210,6 +210,9 @@ const copyText = async () => {
 const init = () => {
     if (props.api && props.api.id) {
         sqlParamList()
+        code.value = ''
+        executionTime.value = 0
+        executionStatu.value = ''
     }
 }
 
