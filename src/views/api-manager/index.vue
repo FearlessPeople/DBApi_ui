@@ -419,16 +419,16 @@ export default {
         margin: 10px 0px;
     }
     .api-center {
-    }
-    .api-header-left {
-        margin-left: 15px;
-        display: flex;
-        align-items: center;
+        .api-header-left {
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
 
-        span {
-            margin: 12px 0px;
-            font-size: 20px;
-            font-weight: bold;
+            span {
+                margin: 12px 0px;
+                font-size: 20px;
+                font-weight: bold;
+            }
         }
     }
 }

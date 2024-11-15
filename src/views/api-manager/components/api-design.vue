@@ -265,6 +265,7 @@ watch(
             align-items: center;
             .header-help {
                 color: var(--color-neutral-6);
+                font-size: 13px;
             }
         }
     }
