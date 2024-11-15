@@ -376,12 +376,15 @@ const fetchGroupList = async () => {
 // 通过 ref 引用子组件
 const apiDoc = ref<InstanceType<typeof ApiDoc> | null>(null)
 const apiDesign = ref<InstanceType<typeof ApiDesign> | null>(null)
+const apiRequest = ref<InstanceType<typeof ApiRequest> | null>(null)
 
 const handleTabChange = (key: string | number) => {
     if (key === '1' && apiDoc.value) {
         apiDoc.value.init()
     } else if (key === '2' && apiDesign.value) {
         apiDesign.value.init()
+    } else if (key === '3' && apiRequest.value) {
+        apiRequest.value.init()
     }
 }
 

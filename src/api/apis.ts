@@ -82,9 +82,15 @@ export function updateApiGroup(group: ApiGroup) {
 export function deleteApiGroup(group: ApiGroup) {
     return axios.get<any, ApiResponse<string>>(`/api/group/delete?id=${group.id}`)
 }
+
 // 保存SQL
 export function save(aipsql: ApiSql) {
     return axios.post<any, ApiResponse<string>>('/api/sql/save', qs.stringify(aipsql))
+}
+
+// 调用接口
+export function callApi(apiPath: string, apiSqlParams: ApiSqlParam[]) {
+    return axios.post<any, ApiResponse<QueryResult>>(`/api/sql/call`, { apiPath, apiSqlParams })
 }
 
 // 执行SQL
