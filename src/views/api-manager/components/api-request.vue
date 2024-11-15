@@ -116,18 +116,16 @@
                 </a-tab-pane>
             </a-tabs>
         </div>
-        <div class="api-request-statu">
-            状态:<span style="color: rgb(var(--green-6))">{{ executionStatu }}</span> 时间:<span
-                style="color: rgb(var(--green-6))"
-                >{{ executionTime }}</span
-            >
-        </div>
+
         <div class="api-request-result">
             <a-tabs default-active-key="1">
                 <a-tab-pane key="1" title="JSON">
                     <div class="response-body">
-                        <div><span>响应体</span></div>
                         <div>
+                            状态:<span style="color: rgb(var(--green-6))">{{ executionStatu }}</span> 时间:<span
+                                style="color: rgb(var(--green-6))"
+                                >{{ executionTime }}</span
+                            >
                             <a-tooltip content="复制内容到剪贴板">
                                 <a-button @click="copyText()" type="text"><icon-copy /></a-button>
                             </a-tooltip>
