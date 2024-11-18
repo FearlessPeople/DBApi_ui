@@ -1,7 +1,7 @@
 <template>
     <div class="login-form-wrapper">
         <div class="login-form-title">{{ $t('login.form.title') }}</div>
-        <div class="login-form-sub-title">{{ $t('login.form.title') }}</div>
+        <div class="login-form-sub-title">一个快速将SQL转换为API接口的平台</div>
         <div class="login-form-error-msg">{{ errorMessage }}</div>
         <a-form ref="loginForm" :model="userInfo" class="login-form" layout="vertical" @submit="handleSubmit">
             <a-form-item
@@ -76,9 +76,9 @@
                 <a-button type="primary" html-type="submit" long :loading="loading">
                     {{ $t('login.form.login') }}
                 </a-button>
-                <a-button type="text" long class="login-form-register-btn">
+                <!-- <a-button type="text" long class="login-form-register-btn">
                     {{ $t('login.form.register') }}
-                </a-button>
+                </a-button> -->
             </a-space>
         </a-form>
     </div>

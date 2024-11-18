@@ -12,10 +12,10 @@ export default {
     'login.form.forgetPassword': '忘记密码',
     'login.form.login': '登录',
     'login.form.register': '注册账号',
-    'login.banner.slogan1': '开箱即用的高质量模板',
-    'login.banner.subSlogan1': '丰富的的页面模板，覆盖大多数典型业务场景',
-    'login.banner.slogan2': '内置了常见问题的解决方案',
-    'login.banner.subSlogan2': '国际化，路由配置，状态管理应有尽有',
-    'login.banner.slogan3': '接入可视化增强工具AUX',
-    'login.banner.subSlogan3': '实现灵活的区块式开发'
+    'login.banner.slogan1': '让 SQL 变 API，构建数据服务更简单！',
+    'login.banner.subSlogan1': '专注高效的数据服务生成，从查询到接口，一步到位。',
+    'login.banner.slogan2': '无需多余代码，快速生成 API！',
+    'login.banner.subSlogan2': '解锁数据的真正潜力，SQL 驱动，安全可靠。',
+    'login.banner.slogan3': 'SQL 到 API，只需几秒，轻松完成！',
+    'login.banner.subSlogan3': '面向开发者的 API 工具，快速、安全、灵活应对业务需求。'
 }
