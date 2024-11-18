@@ -61,8 +61,8 @@
             </div>
         </div>
     </div>
-    <div v-else>
-        <h4>请选择一个 API 以查看详情</h4>
+    <div class="no-api-doc" v-else>
+        <p>请选择一个 API 以查看详情</p>
     </div>
     <div class="query-result-modal">
         <a-modal width="80%" :draggable="true" :footer="false" v-model:visible="resultVisible">
@@ -304,6 +304,14 @@ watch(
         .api-design-right {
             width: 15%;
         }
+    }
+}
+.no-api-doc {
+    p {
+        color: #888;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 15px;
     }
 }
 :deep(.arco-modal-body) {

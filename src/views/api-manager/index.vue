@@ -1,6 +1,6 @@
 <template>
     <div class="layout-demo">
-        <splitpanes style="height: 400px">
+        <splitpanes>
             <pane size="15">
                 <div class="api-tree">
                     <div>
@@ -66,27 +66,33 @@
                 </div>
             </pane>
             <pane size="85">
-                <div class="api-center">
-                    <div class="api-header-left" v-if="selectedApi">
-                        <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
-                        ><a-tag>ID:{{ selectedApi.id }}</a-tag>
+                <div>
+                    <div class="api-center">
+                        <div class="api-header-left" v-if="selectedApi">
+                            <span> <icon-code style="color: rgb(var(--green-6))" />{{ selectedApi.apiName }}&nbsp;&nbsp; </span
+                            ><a-tag>ID:{{ selectedApi.id }}</a-tag>
+                        </div>
+                        <div>
+                            <a-tabs @change="handleTabChange">
+                                <template #extra>
+                                    <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
+                                    <a-button size="mini" type="outline" status="success">帮助文档</a-button>
+                                </template>
+                                <a-tab-pane key="1" title="接口文档">
+                                    <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
+                                </a-tab-pane>
+                                <a-tab-pane key="2" title="接口设计">
+                                    <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
+                                </a-tab-pane>
+                                <a-tab-pane key="3" title="接口调用">
+                                    <ApiRequest ref="apiRequest" :api="selectedApi"></ApiRequest>
+                                </a-tab-pane>
+                                <a-tab-pane key="4" title="访问日志">
+                                    <ApiLog ref="apiLog" :api="selectedApi"></ApiLog>
+                                </a-tab-pane>
+                            </a-tabs>
+                        </div>
                     </div>
-                    <a-tabs @change="handleTabChange">
-                        <template #extra>
-                            <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
-                            <a-button size="mini" type="outline" status="success">帮助文档</a-button>
-                        </template>
-                        <a-tab-pane key="1" title="接口文档">
-                            <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
-                        </a-tab-pane>
-                        <a-tab-pane key="2" title="接口设计">
-                            <ApiDesign ref="apiDesign" :api="selectedApi"></ApiDesign>
-                        </a-tab-pane>
-                        <a-tab-pane key="3" title="接口调用">
-                            <ApiRequest ref="apiRequest" :api="selectedApi"></ApiRequest>
-                        </a-tab-pane>
-                        <a-tab-pane key="4" title="访问日志"> Content of Tab Panel 4 </a-tab-pane>
-                    </a-tabs>
                 </div>
             </pane>
         </splitpanes>
@@ -206,6 +212,7 @@ import ApiDoc from './components/api-doc.vue'
 import ApiDesign from './components/api-design.vue'
 import ApiRequest from './components/api-request.vue'
 import ApiSqlParam from './components/api-sql-param.vue'
+import ApiLog from './components/api-log.vue'
 
 const baseURL = inject('baseURL')
 const keyWord = ref('') // 搜索关键字
@@ -383,6 +390,7 @@ const apiDoc = ref<InstanceType<typeof ApiDoc> | null>(null)
 const apiDesign = ref<InstanceType<typeof ApiDesign> | null>(null)
 const apiRequest = ref<InstanceType<typeof ApiRequest> | null>(null)
 const apiSqlParam = ref<InstanceType<typeof ApiSqlParam> | null>(null)
+const apiLog = ref<InstanceType<typeof ApiLog> | null>(null)
 
 const handleTabChange = (key: string | number) => {
     if (key === '1' && apiDoc.value) {
@@ -392,6 +400,8 @@ const handleTabChange = (key: string | number) => {
         apiSqlParam.value.init()
     } else if (key === '3' && apiRequest.value) {
         apiRequest.value.init()
+    } else if (key === '4' && apiLog.value) {
+        apiLog.value.init()
     }
 }
 
@@ -435,11 +445,36 @@ export default {
 
 .splitpanes__pane {
     height: calc(100vh - 95px); // 设置高度为减去导航栏后的视口高度
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 5em;
     background-color: #ffffff;
 }
-
+:deep(.splitpanes__splitter) {
+    background-color: #e1e2e8;
+    width: 1px;
+    position: relative;
+}
+:deep(.splitpanes__splitter:before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: opacity 0.4s;
+    background-color: rgba(20, 93, 239, 0.2);
+    opacity: 0;
+    z-index: 1;
+}
+:deep(.splitpanes__splitter:hover:before) {
+    opacity: 1;
+}
+:deep(.splitpanes--vertical > .splitpanes__splitter:before) {
+    left: -5px;
+    right: -5px;
+    height: 100%;
+}
+:deep(.splitpanes--horizontal > .splitpanes__splitter:before) {
+    top: -30px;
+    bottom: -30px;
+    width: 100%;
+}
 // .layout-demo :deep(.arco-layout) {
 //     height: 100%; // 确保 layout 充满整个容器
 // }

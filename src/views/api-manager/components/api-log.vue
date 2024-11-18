@@ -1,5 +1,5 @@
 <template>
-    <div class="api-doc" v-if="api">
+    <div class="api-log" v-if="api">
         <p>接口ID: {{ api.id }}</p>
         <p>
             接口路径: <a-tag bordered color="orangered">{{ api.apiPath }}</a-tag>
@@ -35,7 +35,7 @@ defineExpose({ init })
 </script>
 
 <style scoped lang="less">
-.api-doc {
+.api-log {
     padding: 16px;
     background-color: #f9f9f9;
     border-radius: 8px;

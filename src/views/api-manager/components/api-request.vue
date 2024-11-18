@@ -145,8 +145,8 @@
         </div>
     </div>
 
-    <div v-else>
-        <h4>请选择一个 API 以查看详情</h4>
+    <div class="no-api-doc" v-else>
+        <p>请选择一个 API 以查看详情</p>
     </div>
 </template>
 
@@ -293,6 +293,14 @@ watch(
             align-items: center;
             justify-content: space-between;
         }
+    }
+}
+.no-api-doc {
+    p {
+        color: #888;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 15px;
     }
 }
 </style>

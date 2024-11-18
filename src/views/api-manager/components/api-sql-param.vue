@@ -99,8 +99,8 @@
                 </div>
             </div>
         </div>
-        <div v-else>
-            <h4>请选择一个 API 以查看详情</h4>
+        <div class="no-api-doc" v-else>
+            <p>请选择一个 API 以查看详情</p>
         </div>
     </a-card>
 
@@ -407,6 +407,14 @@ watch(
                 text-align: left; /* 确保按钮内容左对齐 */
             }
         }
+    }
+}
+.no-api-doc {
+    p {
+        color: #888;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 15px;
     }
 }
 </style>
