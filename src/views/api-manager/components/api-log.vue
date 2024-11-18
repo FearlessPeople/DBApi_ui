@@ -44,7 +44,7 @@
                                 <template #icon>
                                     <icon-search />
                                 </template>
-                                {{ $t('searchTable.form.search') }}
+                                查询
                             </a-button>
                         </a-space>
                     </a-col>
@@ -54,51 +54,19 @@
                     row-key="id"
                     :loading="loading"
                     :pagination="pagination"
-                    :columns="(cloneColumns as TableColumnData[])"
                     :data="renderData"
                     :bordered="false"
                     :size="size"
                     @page-change="onPageChange"
                 >
-                    <template #index="{ rowIndex }">
-                        {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
-                    </template>
-                    <template #contentType="{ record }">
-                        <a-space>
-                            <a-avatar v-if="record.contentType === 'img'" :size="16" shape="square">
-                                <img
-                                    alt="avatar"
-                                    src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/581b17753093199839f2e327e726b157.svg~tplv-49unhts6dw-image.image"
-                                />
-                            </a-avatar>
-                            <a-avatar v-else-if="record.contentType === 'horizontalVideo'" :size="16" shape="square">
-                                <img
-                                    alt="avatar"
-                                    src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77721e365eb2ab786c889682cbc721c1.svg~tplv-49unhts6dw-image.image"
-                                />
-                            </a-avatar>
-                            <a-avatar v-else :size="16" shape="square">
-                                <img
-                                    alt="avatar"
-                                    src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/ea8b09190046da0ea7e070d83c5d1731.svg~tplv-49unhts6dw-image.image"
-                                />
-                            </a-avatar>
-                            {{ $t(`searchTable.form.contentType.${record.contentType}`) }}
-                        </a-space>
-                    </template>
-                    <template #filterType="{ record }">
-                        {{ $t(`searchTable.form.filterType.${record.filterType}`) }}
-                    </template>
-                    <template #status="{ record }">
-                        <span v-if="record.status === 'offline'" class="circle"></span>
-                        <span v-else class="circle pass"></span>
-                        {{ $t(`searchTable.form.status.${record.status}`) }}
-                    </template>
-                    <template #operations>
-                        <a-button v-permission="['admin']" type="text" size="small">
-                            {{ $t('searchTable.columns.operations.view') }}
-                        </a-button>
-                    </template>
+                    <a-table-column title="API ID" data-index="id" :width="50" :max-width="50"></a-table-column>
+                    <a-table-column title="API名称" data-index="apiName"></a-table-column>
+                    <a-table-column title="API路径" data-index="apiPath" :width="500" :minWidth="500"></a-table-column>
+                    <a-table-column title="请求耗时" data-index="requestDuration"></a-table-column>
+                    <a-table-column title="请求状态" data-index="requestStatus"></a-table-column>
+                    <a-table-column title="请求参数" data-index="requestParams"></a-table-column>
+                    <a-table-column title="响应内容" data-index="responseData"></a-table-column>
+                    <a-table-column title="时间" data-index="createdTime"></a-table-column>
                 </a-table>
             </a-card>
         </div>
