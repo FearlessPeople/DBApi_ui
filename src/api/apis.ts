@@ -1,6 +1,7 @@
 import type { DescData } from '@arco-design/web-vue/es/descriptions/interface' // 类型导入应放在最前
 import axios from 'axios'
 import qs from 'query-string'
+import { Dayjs } from 'dayjs'
 import { ApiResponse, PageDataResponse } from './types' // 非类型导入在后
 
 // ApiList 接口
@@ -53,18 +54,20 @@ export interface QueryResult {
     executionTime: number // SQL 执行时间，单位为毫秒
 }
 export interface ApiRequestLog {
-    id: number // 主键ID
+    id?: number // 主键ID
     apiId?: number // 关联的API ID
     apiName?: string // API名称
     apiPath?: string // API路径
     requestParams?: string // 请求参数
     responseData?: string // 响应数据
-    responseStatus: number // 响应状态码
+    responseStatus?: number // 响应状态码
     responseMessage?: string // 响应消息
     requestDuration?: number // 请求耗时（毫秒）
     clientIp?: string // 客户端IP
-    createdTime: string // 创建时间
+    createdTime?: string // 创建时间
+    createdTimeRange?: string[] // 创建时间范围，定义为 Dayjs 类型数组
 }
+
 export interface ApiRequestLogParams extends Partial<ApiRequestLog> {
     current: number // 当前页数
     pageSize: number // 每页条数
@@ -140,7 +143,7 @@ export function deleteApiSqlParam(id: number) {
 
 // API接口请求日志
 export function apiRequestLogList(params: ApiRequestLogParams) {
-    return axios.post<PageDataResponse<ApiRequestLog[]>>(`/api/apiRequestLog/list`, qs.stringify(params), {
+    return axios.post<PageDataResponse<ApiRequestLog>>(`/api/apiRequestLog/list`, qs.stringify(params), {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
