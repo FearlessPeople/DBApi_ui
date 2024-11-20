@@ -136,8 +136,7 @@ const treeData = reactive<TreeNode[]>([
     }
 ])
 
-const dataSourceId = ref(null)
-
+const dataSourceId = ref<number | undefined>(undefined)
 // 获取数据源下的所有表
 const fetchTableList = async () => {
     if (!dataSourceId.value || dataSourceId.value <= 0) return
@@ -169,7 +168,7 @@ const fetchAllDBList = async () => {
 
 const reset = () => {
     code.value = ''
-    dataSourceId.value = null
+    dataSourceId.value = undefined
     apisql.value = undefined
     queryResult.value = undefined
     fetchAllDBList()
@@ -183,11 +182,9 @@ const init = async () => {
         const { data } = await getApiSql(props.api.id)
         if (data) {
             code.value = data.apiSql
-            if (data.datasourceId != null) {
-                dataSourceId.value = data.datasourceId
-                apisql.value = data
-                fetchAllDBList()
-            }
+            dataSourceId.value = data.datasourceId
+            apisql.value = data
+            fetchAllDBList()
         }
     }
 }
