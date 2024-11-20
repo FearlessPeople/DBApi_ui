@@ -136,10 +136,12 @@ const treeData = reactive<TreeNode[]>([
     }
 ])
 
-const dataSourceId = ref(1)
+const dataSourceId = ref(null)
 
 // 获取数据源下的所有表
 const fetchTableList = async () => {
+    if (!dataSourceId.value || dataSourceId.value <= 0) return
+
     const res = await allTables(dataSourceId.value)
     treeData[0].children = res.data.map((table, index) => ({
         title: table,
@@ -149,7 +151,7 @@ const fetchTableList = async () => {
 }
 
 // 处理数据源切换
-const handleDataSourceChange = async () => {
+const handleDataSourceChange = () => {
     fetchTableList()
 }
 
@@ -167,7 +169,7 @@ const fetchAllDBList = async () => {
 
 const reset = () => {
     code.value = ''
-    dataSourceId.value = 1
+    dataSourceId.value = null
     apisql.value = undefined
     queryResult.value = undefined
     fetchAllDBList()
@@ -181,9 +183,11 @@ const init = async () => {
         const { data } = await getApiSql(props.api.id)
         if (data) {
             code.value = data.apiSql
-            dataSourceId.value = data.datasourceId ?? 1 // 使用空值合并运算符提供默认值
-            apisql.value = data
-            fetchAllDBList()
+            if (data.datasourceId != null) {
+                dataSourceId.value = data.datasourceId
+                apisql.value = data
+                fetchAllDBList()
+            }
         }
     }
 }
