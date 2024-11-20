@@ -76,7 +76,9 @@
                             <a-tabs @change="handleTabChange">
                                 <template #extra>
                                     <a-button type="primary" @click="createApi()">新建接口</a-button>&nbsp;&nbsp;
-                                    <a-button size="mini" type="outline" status="success">帮助文档</a-button>
+                                    <a-link target="_blank" href="https://github.com/FearlessPeople/DBApi"
+                                        ><icon-question-circle />帮助文档</a-link
+                                    >
                                 </template>
                                 <a-tab-pane key="1" title="接口文档">
                                     <ApiDoc ref="apiDoc" :api="selectedApi"></ApiDoc>
